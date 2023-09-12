@@ -39,6 +39,7 @@ def build_dash_player_over_quic(player_configuration: PlayerConfiguration,
     MIN_REBUFFER_DURATION = player_configuration.player_buffer_settings.min_rebuffer_duration
     MIN_START_DURATION = player_configuration.player_buffer_settings.min_start_duration
 
+    # we want to focus on non beta version
     if not beta:
         cfg = Config
         buffer_manager: BufferManager = BufferManagerImpl()
@@ -48,16 +49,21 @@ def build_dash_player_over_quic(player_configuration: PlayerConfiguration,
             mpd_provider: MPDProvider = BETAMPDProviderImpl(DefaultMPDParser(), cfg.update_interval,
                                                             QuicClientImpl([], event_parser=H3EventParserImpl()))
         else:
-            mpd_provider: MPDProvider = BETAMPDProviderImpl(DefaultMPDParser(), cfg.update_interval, TCPClientImpl([]))
+            mpd_provider: MPDProvider = BETAMPDProviderImpl(
+                DefaultMPDParser(), cfg.update_interval, TCPClientImpl([]))
 
         analyzer: BETAPlaybackAnalyzer = BETAPlaybackAnalyzer(
-            BETAPlaybackAnalyzerConfig(save_plots_dir=plot_output, dump_results_path=dump_results),
+            BETAPlaybackAnalyzerConfig(
+                save_plots_dir=plot_output, dump_results_path=dump_results),
             mpd_provider
         )
-        bandwidth_meter = BandwidthMeterImpl(cfg.max_initial_bitrate, cfg.smoothing_factor, [analyzer])
-        h3_event_parser = H3EventParserImpl(listeners=[bandwidth_meter, analyzer])
+        bandwidth_meter = BandwidthMeterImpl(
+            cfg.max_initial_bitrate, cfg.smoothing_factor, [analyzer])
+        h3_event_parser = H3EventParserImpl(
+            listeners=[bandwidth_meter, analyzer])
         if downloader_configuration.protocol is DownloaderProtocolEnum.QUIC:
-            download_manager = QuicClientImpl([bandwidth_meter, analyzer], event_parser=h3_event_parser)
+            download_manager = QuicClientImpl(
+                [bandwidth_meter, analyzer], event_parser=h3_event_parser)
         else:
             download_manager = TCPClientImpl([bandwidth_meter, analyzer])
         abr_controller = BetaABRController(
@@ -77,25 +83,31 @@ def build_dash_player_over_quic(player_configuration: PlayerConfiguration,
             mpd_provider: MPDProvider = BETAMPDProviderImpl(DefaultMPDParser(), cfg.update_interval,
                                                             QuicClientImpl([], H3EventParserImpl()))
         else:
-            mpd_provider: MPDProvider = BETAMPDProviderImpl(DefaultMPDParser(), cfg.update_interval, TCPClientImpl([]))
+            mpd_provider: MPDProvider = BETAMPDProviderImpl(
+                DefaultMPDParser(), cfg.update_interval, TCPClientImpl([]))
         analyzer: BETAPlaybackAnalyzer = BETAPlaybackAnalyzer(
-            BETAPlaybackAnalyzerConfig(save_plots_dir=plot_output, dump_results_path=dump_results),
+            BETAPlaybackAnalyzerConfig(
+                save_plots_dir=plot_output, dump_results_path=dump_results),
             mpd_provider)
-        bandwidth_meter = BandwidthMeterImpl(cfg.max_initial_bitrate, cfg.smoothing_factor, [analyzer])
+        bandwidth_meter = BandwidthMeterImpl(
+            cfg.max_initial_bitrate, cfg.smoothing_factor, [analyzer])
         h3_event_parser = H3EventParserImpl([bandwidth_meter, analyzer])
         if downloader_configuration.protocol is DownloaderProtocolEnum.QUIC:
-            download_manager = QuicClientImpl([bandwidth_meter, analyzer], h3_event_parser)
+            download_manager = QuicClientImpl(
+                [bandwidth_meter, analyzer], h3_event_parser)
         else:
             download_manager = TCPClientImpl([bandwidth_meter, analyzer])
 
         vq_threshold_manager = MockVQThresholdManager()
-        beta_manager = BETAManagerImpl(mpd_provider, download_manager, vq_threshold_manager, panic_buffer_level=PANIC_BUFFER_LEVEL, safe_buffer_level=SAFE_BUFFER_LEVEL)
+        beta_manager = BETAManagerImpl(mpd_provider, download_manager, vq_threshold_manager,
+                                       panic_buffer_level=PANIC_BUFFER_LEVEL, safe_buffer_level=SAFE_BUFFER_LEVEL)
         download_manager.add_listener(beta_manager)
         bandwidth_meter.add_listener(beta_manager)
         h3_event_parser.add_listener(beta_manager)
 
         abr_controller: ExtendedABRController = BetaABRController(
-            DashABRController(PANIC_BUFFER_LEVEL, SAFE_BUFFER_LEVEL, bandwidth_meter, buffer_manager, abr, BUFFER_DURATION )
+            DashABRController(PANIC_BUFFER_LEVEL, SAFE_BUFFER_LEVEL,
+                              bandwidth_meter, buffer_manager, abr, BUFFER_DURATION)
         )
 
         scheduler: BETAScheduler = BETASchedulerImpl(BUFFER_DURATION, cfg.update_interval, download_manager,

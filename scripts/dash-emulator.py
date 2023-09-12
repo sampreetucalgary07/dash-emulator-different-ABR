@@ -71,11 +71,14 @@ if __name__ == '__main__':
     except AssertionError:
         print("Python 3.3+ is required.")
         exit(-1)
+    # logging configuration
     logging.basicConfig(
         level=logging.INFO, format='%(asctime)s %(name)20s %(levelname)8s:%(message)s')
     parser = create_parser()
+    # parses the command-line arguments and stores them in the args variable as an object.
     args = parser.parse_args()
 
+    # converts the parsed arguments into a dictionary for easier access.
     args = vars(args)
 
     validated = validate_args(args)

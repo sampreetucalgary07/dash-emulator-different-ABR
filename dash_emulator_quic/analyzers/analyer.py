@@ -183,7 +183,7 @@ class BETAPlaybackAnalyzer(
             "End",
             "Quality",
             "Bitrate",
-            "Throughput",
+            "Throughut",
             "Ratio",
             "URL",
         )
@@ -213,7 +213,7 @@ class BETAPlaybackAnalyzer(
                     segment.url,
                 )
             )
-            output.write(self._buffer_levels)
+            output.write("Buffer levels : ", self._buffer_levels)
         output.write("\n")
 
         # Stalls

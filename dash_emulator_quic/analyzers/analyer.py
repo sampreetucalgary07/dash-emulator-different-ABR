@@ -9,6 +9,7 @@ from typing import List, Tuple, TextIO, Optional, Dict
 import matplotlib.pyplot as plt
 from dash_emulator.bandwidth import BandwidthUpdateListener
 from dash_emulator.download import DownloadEventListener
+from dash_emulator.buffer import BufferManager
 from dash_emulator.models import State
 from dash_emulator.mpd import MPDProvider
 from dash_emulator.player import PlayerEventListener
@@ -213,7 +214,7 @@ class BETAPlaybackAnalyzer(
                     segment.url,
                 )
             )
-            output.write(self._buffer_levels.__str__())
+            # output.write(self._buffer_levels.__str__())
         output.write("\n")
 
         # Stalls

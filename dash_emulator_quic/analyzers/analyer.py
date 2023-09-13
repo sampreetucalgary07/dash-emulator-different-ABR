@@ -30,7 +30,9 @@ class BETAPlaybackAnalyzerConfig:
 
 
 class AnalyzerSegment:
-    def __init__(self, index, start_time, completion_time, quality_selection, bandwidth):
+    def __init__(
+        self, index, start_time, completion_time, quality_selection, bandwidth
+    ):
         self.index = index
         self.start_time = start_time
         self.completion_time = completion_time
@@ -47,8 +49,13 @@ class AnalyzerSegment:
         return self.position / self.size
 
 
-class BETAPlaybackAnalyzer(PlaybackAnalyzer, PlayerEventListener, SchedulerEventListener, DownloadEventListener,
-                           BandwidthUpdateListener):
+class BETAPlaybackAnalyzer(
+    PlaybackAnalyzer,
+    PlayerEventListener,
+    SchedulerEventListener,
+    DownloadEventListener,
+    BandwidthUpdateListener,
+):
     log = logging.getLogger("BETAPlaybackAnalyzer")
 
     def __init__(self, config: BETAPlaybackAnalyzerConfig, mpd_provider: MPDProvider):
@@ -58,7 +65,9 @@ class BETAPlaybackAnalyzer(PlaybackAnalyzer, PlayerEventListener, SchedulerEvent
         self._buffer_levels: List[Tuple[float, float]] = []
         self._throughputs: List[Tuple[float, int]] = []
         self._states: List[Tuple[float, State]] = []
-        self._segments: List[AnalyzerSegment] = []  # start time, completion time, quality selection, bandwidth
+        self._segments: List[
+            AnalyzerSegment
+        ] = []  # start time, completion time, quality selection, bandwidth
         self._segments_by_url: Dict[str, AnalyzerSegment] = {}
 
         # index, start time, completion time, quality, bandwidth
@@ -81,13 +90,19 @@ class BETAPlaybackAnalyzer(PlaybackAnalyzer, PlayerEventListener, SchedulerEvent
         """
         return datetime.datetime.now().timestamp() - start_time
 
-    async def on_state_change(self, position: float, old_state: State, new_state: State):
+    async def on_state_change(
+        self, position: float, old_state: State, new_state: State
+    ):
         self._states.append((self._seconds_since(self._start_time), new_state))
 
     async def on_buffer_level_change(self, buffer_level):
-        self._buffer_levels.append((self._seconds_since(self._start_time), buffer_level))
+        self._buffer_levels.append(
+            (self._seconds_since(self._start_time), buffer_level)
+        )
 
-    async def on_bytes_transferred(self, length: int, url: str, position: int, size: int) -> None:
+    async def on_bytes_transferred(
+        self, length: int, url: str, position: int, size: int
+    ) -> None:
         segment = self._segments_by_url[url]
         segment.size = size
         segment.position = position
@@ -104,8 +119,13 @@ class BETAPlaybackAnalyzer(PlaybackAnalyzer, PlayerEventListener, SchedulerEvent
 
     async def on_segment_download_start(self, index, selections):
         throughput = self._throughputs[-1][1] if len(self._throughputs) != 0 else 0
-        self._current_segment = AnalyzerSegment(index, self._seconds_since(self._start_time), None, selections[0],
-                                                throughput)
+        self._current_segment = AnalyzerSegment(
+            index,
+            self._seconds_since(self._start_time),
+            None,
+            selections[0],
+            throughput,
+        )
 
     async def on_segment_download_complete(self, index):
         completion_time = self._seconds_since(self._start_time)
@@ -138,7 +158,7 @@ class BETAPlaybackAnalyzer(PlaybackAnalyzer, PlayerEventListener, SchedulerEvent
             return None
 
         for adaptation_set_id, adaptation_set_obj in mpd.adaptation_sets.items():
-            if adaptation_set_obj.content_type == 'video':
+            if adaptation_set_obj.content_type == "video":
                 adaptation_set = adaptation_set_obj
                 break
 
@@ -157,7 +177,16 @@ class BETAPlaybackAnalyzer(PlaybackAnalyzer, PlayerEventListener, SchedulerEvent
         total_stall_duration = 0
         total_stall_num = 0
 
-        headers = ('Index', 'Start', 'End', 'Quality', 'Bitrate', 'Throughput', 'Ratio', 'URL')
+        headers = (
+            "Index",
+            "Start",
+            "End",
+            "Quality",
+            "Bitrate",
+            "Throughput",
+            "Ratio",
+            "URL",
+        )
         output.write("%-10s%-10s%-10s%-10s%-10s%-10s%-10s%-20s\n" % headers)
         for index, segment in enumerate(self._segments):
             if last_quality is None:
@@ -171,9 +200,20 @@ class BETAPlaybackAnalyzer(PlaybackAnalyzer, PlayerEventListener, SchedulerEvent
             bitrate = representation.bandwidth
             segment.segment_bitrate = bitrate
             bitrates.append(bitrate)
-            output.write("%-10d%-10.2f%-10.2f%-10d%-10d%-10d%-10.2f%-20s\n" % (
-                index, segment.start_time, segment.completion_time, segment.quality_selection, bitrate,
-                segment.bandwidth, segment.ratio, segment.url))
+            output.write(
+                "%-10d%-10.2f%-10.2f%-10d%-10d%-10d%-10.2f%-20s\n"
+                % (
+                    index,
+                    segment.start_time,
+                    segment.completion_time,
+                    segment.quality_selection,
+                    bitrate,
+                    segment.bandwidth,
+                    segment.ratio,
+                    segment.url,
+                )
+            )
+            output.write(self._buffer_levels)
         output.write("\n")
 
         # Stalls
@@ -186,12 +226,14 @@ class BETAPlaybackAnalyzer(PlaybackAnalyzer, PlayerEventListener, SchedulerEvent
             elif state == State.READY:
                 if buffering_start is not None:
                     duration = time - buffering_start
-                    output.write("%-6.2f%-6.2f%-6.2f\n" % (buffering_start, time, duration))
+                    output.write(
+                        "%-6.2f%-6.2f%-6.2f\n" % (buffering_start, time, duration)
+                    )
                     total_stall_num += 1
                     total_stall_duration += duration
                     buffering_start = None
 
-        output.write('\n')
+        output.write("\n")
         # Stall summary
         output.write(f"Number of Stalls: {total_stall_num}\n")
         output.write(f"Total seconds of stalls: {total_stall_duration}\n")
@@ -207,32 +249,42 @@ class BETAPlaybackAnalyzer(PlaybackAnalyzer, PlayerEventListener, SchedulerEvent
             self.save_plot()
 
         if self.config.dump_results_path is not None:
-            self.dump_results(self.config.dump_results_path, self._segments, total_stall_num, total_stall_duration,
-                              average_bitrate, quality_switches)
+            self.dump_results(
+                self.config.dump_results_path,
+                self._segments,
+                total_stall_num,
+                total_stall_duration,
+                average_bitrate,
+                quality_switches,
+            )
 
     @staticmethod
-    def dump_results(path, segments: List[AnalyzerSegment], num_stall, dur_stall, avg_bitrate,
-                     num_quality_switches):
-        data = {
-            "segments": []
-        }
+    def dump_results(
+        path,
+        segments: List[AnalyzerSegment],
+        num_stall,
+        dur_stall,
+        avg_bitrate,
+        num_quality_switches,
+    ):
+        data = {"segments": []}
         for segment in segments:
             data_obj = {
-                'index': segment.index,
-                'start': segment.start_time,
-                'end': segment.completion_time,
-                'quality': segment.quality_selection,
-                'bitrate': segment.segment_bitrate,
-                'throughput': segment.bandwidth,
-                'ratio': segment.ratio,
-                'url': segment.url
+                "index": segment.index,
+                "start": segment.start_time,
+                "end": segment.completion_time,
+                "quality": segment.quality_selection,
+                "bitrate": segment.segment_bitrate,
+                "throughput": segment.bandwidth,
+                "ratio": segment.ratio,
+                "url": segment.url,
             }
-            data['segments'].append(data_obj)
+            data["segments"].append(data_obj)
 
-        data['num_stall'] = num_stall
-        data['dur_stall'] = dur_stall
-        data['avg_bitrate'] = avg_bitrate
-        data['num_quality_switches'] = num_quality_switches
+        data["num_stall"] = num_stall
+        data["dur_stall"] = dur_stall
+        data["avg_bitrate"] = avg_bitrate
+        data["num_quality_switches"] = num_quality_switches
 
         extra_index = 1
         final_path = f"{path}-{extra_index}.json"
@@ -240,28 +292,28 @@ class BETAPlaybackAnalyzer(PlaybackAnalyzer, PlayerEventListener, SchedulerEvent
             extra_index += 1
             final_path = f"{path}-{extra_index}.json"
 
-        with open(final_path, 'w') as f:
+        with open(final_path, "w") as f:
             f.write(json.dumps(data))
 
     def save_plot(self):
         def plot_bws(ax: plt.Axes):
             xs = [i[0] for i in self._throughputs]
             ys = [i[1] / 1000 for i in self._throughputs]
-            lines1 = ax.plot(xs, ys, color='red', label='Throughput')
+            lines1 = ax.plot(xs, ys, color="red", label="Throughput")
             ax.set_xlim(0)
             ax.set_ylim(0)
             ax.set_xlabel("Time (second)")
-            ax.set_ylabel("Bandwidth (kbps)", color='red')
-            return *lines1,
+            ax.set_ylabel("Bandwidth (kbps)", color="red")
+            return (*lines1,)
 
         def plot_bufs(ax: plt.Axes):
             xs = [i[0] for i in self._buffer_levels]
             ys = [i[1] for i in self._buffer_levels]
-            line1 = ax.plot(xs, ys, color='blue', label='Buffer')
+            line1 = ax.plot(xs, ys, color="blue", label="Buffer")
             ax.set_xlim(0)
             ax.set_ylim(0)
-            ax.set_ylabel("Buffer (second)", color='blue')
-            line2 = ax.hlines(1.5, 0, 20, linestyles='dashed', label='Panic buffer')
+            ax.set_ylabel("Buffer (second)", color="blue")
+            line2 = ax.hlines(1.5, 0, 20, linestyles="dashed", label="Panic buffer")
             return *line1, line2
 
         output_file = os.path.join(self.config.save_plots_dir, "status.pdf")

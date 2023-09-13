@@ -213,7 +213,7 @@ class BETAPlaybackAnalyzer(
                     segment.url,
                 )
             )
-            output.write("Buffer_level : %s\n" % self._buffer_levels[-1])
+            output.write(self._buffer_levels.__str__())
         output.write("\n")
 
         # Stalls

@@ -72,7 +72,7 @@ def build_dash_player_over_quic(
                 cfg.update_interval,
                 QuicClientImpl([], event_parser=H3EventParserImpl()),
             )
-        else:
+        else:  # this is the case
             mpd_provider: MPDProvider = BETAMPDProviderImpl(
                 DefaultMPDParser(), cfg.update_interval, TCPClientImpl([])
             )
@@ -105,7 +105,7 @@ def build_dash_player_over_quic(
         )
         scheduler: Scheduler = BETASchedulerImpl(
             BUFFER_DURATION,
-            cfg.update_interval,
+            cfg.update_interval,  # 0.05
             download_manager,
             bandwidth_meter,
             buffer_manager,

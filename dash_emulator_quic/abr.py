@@ -7,7 +7,9 @@ from dash_emulator.models import AdaptationSet
 
 class ExtendedABRController(ABC):
     @abstractmethod
-    def update_selection(self, adaptation_sets: Dict[int, AdaptationSet], choose_lowest=False) -> Dict[int, int]:
+    def update_selection(
+        self, adaptation_sets: Dict[int, AdaptationSet], choose_lowest=False
+    ) -> Dict[int, int]:
         """
         Update the representation selections
 
@@ -39,7 +41,9 @@ class BetaABRController(ExtendedABRController):
         Stores the representation id with the lowest bitrate (value) for the adaptation set id (key)
         """
 
-    def _find_representation_id_of_lowest_bitrate(self, adaptation_set: AdaptationSet) -> int:
+    def _find_representation_id_of_lowest_bitrate(
+        self, adaptation_set: AdaptationSet
+    ) -> int:
         """
         Find the representation ID with the lowest bitrate in a given adaptation set
         Parameters
@@ -68,10 +72,14 @@ class BetaABRController(ExtendedABRController):
 
         return min_id
 
-    def update_selection(self, adaptation_sets: Dict[int, AdaptationSet], choose_lowest=False) -> Dict[int, int]:
+    def update_selection(
+        self, adaptation_sets: Dict[int, AdaptationSet], choose_lowest=False
+    ) -> Dict[int, int]:
         if choose_lowest is True:
             results = {}
             for adaptation_set in adaptation_sets.values():
-                results[adaptation_set.id] = self._find_representation_id_of_lowest_bitrate(adaptation_set)
+                results[
+                    adaptation_set.id
+                ] = self._find_representation_id_of_lowest_bitrate(adaptation_set)
             return results
         return self.dash_abr_controller.update_selection(adaptation_sets)

@@ -187,6 +187,8 @@ def build_dash_player_over_quic(
             abr_controller,
             [event_logger, beta_manager, analyzer],
         )
+        print(type(abr_controller))
+        print(abr_controller)
         return (
             DASHPlayer(
                 cfg.update_interval,

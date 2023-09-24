@@ -125,6 +125,8 @@ class BETASchedulerImpl(BETAScheduler):
             if logic == True and len(self.qual_list) > 3:
                 slope = self.slope_estimator(self.qual_list[-3:])
                 self._current_selections[0] = self._current_selections[0] + slope
+                if self._current_selections[0] > 6:
+                    self._current_selections[0] = 6
 
             self.log.info(f"selections after logic ={self._current_selections}")
 

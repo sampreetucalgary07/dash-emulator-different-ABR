@@ -77,7 +77,7 @@ class BETASchedulerImpl(BETAScheduler):
         self._dropped_index = None
 
     async def loop(self):
-        qual_list = []
+        self.qual_list = []
         while True:
             # Check buffer level
             if self.buffer_manager.buffer_level > self.max_buffer_duration:
@@ -96,7 +96,9 @@ class BETASchedulerImpl(BETAScheduler):
             else:
                 selections = self.abr_controller.update_selection(self.adaptation_sets)
             self._current_selections = selections
-            print(f"selections={self._current_selections}")
+            self.log.info(f"selections={self._current_selections}")
+            self.qual_list.append(selections)
+            self.log.info(f"qual_list={self.qual_list}")
             for listener in self.listeners:
                 await listener.on_segment_download_start(self._index, selections)
             duration = 0
@@ -105,7 +107,6 @@ class BETASchedulerImpl(BETAScheduler):
                 adaptation_set = self.adaptation_sets[adaptation_set_id]
                 representation = adaptation_set.representations.get(selection)
                 representation_str = "%d:%d" % (adaptation_set_id, representation.id)
-                qual_list.append(representation)
                 if representation_str not in self._representation_initialized:
                     await self.download_manager.download(representation.initialization)
                     await self.download_manager.wait_complete(

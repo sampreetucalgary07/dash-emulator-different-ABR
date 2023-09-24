@@ -26,14 +26,16 @@ class BETAScheduler(Scheduler, ABC):
 class BETASchedulerImpl(BETAScheduler):
     log = logging.getLogger("BETASchedulerImpl")
 
-    def __init__(self,
-                 max_buffer_duration: float,
-                 update_interval: float,
-                 download_manager: QuicClient,
-                 bandwidth_meter: BandwidthMeter,
-                 buffer_manager: BufferManager,
-                 abr_controller: ExtendedABRController,
-                 listeners: List[SchedulerEventListener]):
+    def __init__(
+        self,
+        max_buffer_duration: float,
+        update_interval: float,
+        download_manager: QuicClient,
+        bandwidth_meter: BandwidthMeter,
+        buffer_manager: BufferManager,
+        abr_controller: ExtendedABRController,
+        listeners: List[SchedulerEventListener],
+    ):
         """
         Parameters
         ----------
@@ -82,12 +84,18 @@ class BETASchedulerImpl(BETAScheduler):
                 continue
 
             # Download one segment from each adaptation set
-            self.log.info(f"index={self._index}, and dropped_index={self._dropped_index}")
+            self.log.info(
+                f"index={self._index}, and dropped_index={self._dropped_index}"
+            )
             if self._index == self._dropped_index:
-                selections = self.abr_controller.update_selection(self.adaptation_sets, choose_lowest=True)
+                print("self._index == self._dropped_index")
+                selections = self.abr_controller.update_selection(
+                    self.adaptation_sets, choose_lowest=True
+                )
             else:
                 selections = self.abr_controller.update_selection(self.adaptation_sets)
             self._current_selections = selections
+            print(f"selections={self._current_selections}")
             for listener in self.listeners:
                 await listener.on_segment_download_start(self._index, selections)
             duration = 0
@@ -98,8 +106,13 @@ class BETASchedulerImpl(BETAScheduler):
                 representation_str = "%d:%d" % (adaptation_set_id, representation.id)
                 if representation_str not in self._representation_initialized:
                     await self.download_manager.download(representation.initialization)
-                    await self.download_manager.wait_complete(representation.initialization)
-                    self.log.info(f"Segment {self._index} Complete. Move to next segment")
+                    await self.download_manager.wait_complete(
+                        representation.initialization
+                    )
+                    self.log.info(
+                        f"Segment {self._index} Complete. Move to next segment"
+                        f" (representation: {representation_str})"
+                    )
                     self._representation_initialized.add(representation_str)
                 try:
                     segment = representation.segments[self._index]
@@ -154,7 +167,11 @@ class BETASchedulerImpl(BETAScheduler):
             return
 
         for adaptation_set_id, selection in self._current_selections.items():
-            segment = self.adaptation_sets[adaptation_set_id].representations[selection].segments[self._index]
+            segment = (
+                self.adaptation_sets[adaptation_set_id]
+                .representations[selection]
+                .segments[self._index]
+            )
             self.log.debug(f"BETA: Stop current downloading URL: {segment.url}")
             await self.download_manager.stop(segment.url)
 

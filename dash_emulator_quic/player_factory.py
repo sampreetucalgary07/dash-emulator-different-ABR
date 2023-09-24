@@ -101,6 +101,7 @@ def build_dash_player_over_quic(
                 buffer_manager,
                 abr,
                 BUFFER_DURATION,
+                slope=1.0,
             )
         )
         scheduler: Scheduler = BETASchedulerImpl(
@@ -112,8 +113,8 @@ def build_dash_player_over_quic(
             abr_controller,
             [event_logger, analyzer],
         )
-        print(type(abr_controller))
-        print(abr_controller)
+        # print(type(abr_controller))
+        # print(abr_controller)
         return (
             DASHPlayer(
                 cfg.update_interval,
@@ -126,7 +127,7 @@ def build_dash_player_over_quic(
             ),
             analyzer,
         )
-    else:
+    else:  # this is NOT the case
         cfg = Config
         buffer_manager: BufferManager = BufferManagerImpl()
         event_logger = EventLogger()
@@ -177,6 +178,7 @@ def build_dash_player_over_quic(
                 buffer_manager,
                 abr,
                 BUFFER_DURATION,
+                slope=1.0,
             )
         )
 

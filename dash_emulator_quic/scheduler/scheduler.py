@@ -86,10 +86,14 @@ class BETASchedulerImpl(BETAScheduler):
         # ]
         # if all(diff > 0 for diff in differences):
         #     s = True
-        if slope >= 0:
-            return round(slope)
+        if slope > 1.5:
+            slope = 2
+        elif slope <= 1.5:
+            slope = 1
         else:
-            return 0
+            slope = 0
+
+        return slope
 
     async def loop(self):
         self.qual_list = []

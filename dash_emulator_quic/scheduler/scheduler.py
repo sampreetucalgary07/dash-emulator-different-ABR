@@ -77,6 +77,7 @@ class BETASchedulerImpl(BETAScheduler):
         self._dropped_index = None
 
     async def loop(self):
+        qual_list = []
         while True:
             # Check buffer level
             if self.buffer_manager.buffer_level > self.max_buffer_duration:
@@ -104,6 +105,7 @@ class BETASchedulerImpl(BETAScheduler):
                 adaptation_set = self.adaptation_sets[adaptation_set_id]
                 representation = adaptation_set.representations.get(selection)
                 representation_str = "%d:%d" % (adaptation_set_id, representation.id)
+                qual_list.append(representation)
                 if representation_str not in self._representation_initialized:
                     await self.download_manager.download(representation.initialization)
                     await self.download_manager.wait_complete(
@@ -111,8 +113,9 @@ class BETASchedulerImpl(BETAScheduler):
                     )
                     self.log.info(
                         f"Segment {self._index} Complete. Move to next segment"
-                        f" (representation: {representation_str})"
                     )
+                    self.log.info(f" (representation: {representation_str})")
+
                     self._representation_initialized.add(representation_str)
                 try:
                     segment = representation.segments[self._index]

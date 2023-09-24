@@ -3,6 +3,8 @@ import logging
 from abc import ABC, abstractmethod
 from asyncio import Task
 from typing import Dict, Optional, Set, List
+import numpy as np
+from scipy import stats
 
 from dash_emulator.bandwidth import BandwidthMeter
 from dash_emulator.buffer import BufferManager
@@ -77,17 +79,15 @@ class BETASchedulerImpl(BETAScheduler):
         self._dropped_index = None
 
     def slope_estimator(self, qual_list):
+        x = np.arange(len(qual_list))  # Create x-values as indices of data points
+        slope, _, _, _, _ = stats.linregress(x, qual_list)
+        print("slope is", slope)
         differences = [
             qual_list[i + 1] - qual_list[i] for i in range(len(qual_list) - 1)
         ]
         if all(diff > 0 for diff in differences):
-            s = 1
-        elif all(diff < 0 for diff in differences):
-            s = -1
-        elif all(diff == 0 for diff in differences):
-            s = 0
-        else:
-            s = 2
+            s = True
+
         return s
 
     async def loop(self):

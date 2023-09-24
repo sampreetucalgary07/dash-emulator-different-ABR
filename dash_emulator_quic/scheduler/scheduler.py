@@ -76,8 +76,19 @@ class BETASchedulerImpl(BETAScheduler):
         self._end = False
         self._dropped_index = None
 
+    def slope_estimator(self, qual_list):
+        if all(diff > 0 for diff in qual_list):
+            slope = 1
+        elif all(diff < 0 for diff in qual_list):
+            slope = -1
+        else:
+            slope = 0
+        return slope
+
     async def loop(self):
         self.qual_list = []
+        # self.log.info("Slope is 1.0")
+        self.log.info("BETA: Start scheduler loop")
         while True:
             # Check buffer level
             if self.buffer_manager.buffer_level > self.max_buffer_duration:
@@ -95,10 +106,23 @@ class BETASchedulerImpl(BETAScheduler):
                 )
             else:
                 selections = self.abr_controller.update_selection(self.adaptation_sets)
+
             self._current_selections = selections
-            self.log.info(f"selections={self._current_selections}")
-            self.qual_list.append(selections)
+            self.log.info(f"selections before logic ={self._current_selections}")
+            self.qual_list.append(self._current_selections[0])
             self.log.info(f"qual_list={self.qual_list}")
+
+            # calculate slope
+            slope = self.slope_estimator(self.qual_list[-3:])
+
+            # logic
+            if (self._current_selections[0] != 6 or slope != 1) and len(
+                self.qual_list
+            ) > 2:
+                self._current_selections[0] = selections[0] - 1
+
+            self.log.info(f"selections after logic ={self._current_selections}")
+
             for listener in self.listeners:
                 await listener.on_segment_download_start(self._index, selections)
             duration = 0
@@ -115,7 +139,7 @@ class BETASchedulerImpl(BETAScheduler):
                     self.log.info(
                         f"Segment {self._index} Complete. Move to next segment"
                     )
-                    self.log.info(f" (representation: {representation_str})")
+                    # self.log.info(f" (representation: {representation_str})")
 
                     self._representation_initialized.add(representation_str)
                 try:

@@ -86,14 +86,18 @@ class BETASchedulerImpl(BETAScheduler):
         # ]
         # if all(diff > 0 for diff in differences):
         #     s = True
-        if slope > 1.5:
-            slope = 2
-        elif slope <= 1.5:
-            slope = 1
-        else:
-            slope = 0
+        # if slope > 1.5:
+        #     slope = 2
+        # elif slope <= 1.5:
+        #     slope = 1
+        # else:
+        #     slope = 0
 
-        return slope
+        # return slope
+        if slope > 1:
+            return 1
+        else:
+            return 0
 
     async def loop(self):
         self.qual_list = []
@@ -128,6 +132,7 @@ class BETASchedulerImpl(BETAScheduler):
             # calculate slope
             if logic == True and len(self.qual_list) > 3:
                 slope = self.slope_estimator(self.qual_list[-3:])
+                self.log.info(f"slope={slope}")
                 self._current_selections[0] = self._current_selections[0] + slope
                 if self._current_selections[0] > 6:
                     self._current_selections[0] = 6

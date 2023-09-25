@@ -94,6 +94,7 @@ class BETASchedulerImpl(BETAScheduler):
         #     slope = 0
 
         # return slope
+        print("slope : ", slope)
         if slope > 1:
             return 1
         else:

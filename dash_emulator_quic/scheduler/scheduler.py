@@ -81,7 +81,7 @@ class BETASchedulerImpl(BETAScheduler):
     def slope_estimator(self, qual_list):
         x = np.arange(len(qual_list))
         slope, _, _, _, _ = stats.linregress(x, qual_list)
-        print("slope : ", slope)
+
         if slope > 0.33:
             return 1
         else:

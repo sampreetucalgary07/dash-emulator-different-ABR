@@ -101,7 +101,6 @@ def build_dash_player_over_quic(
                 buffer_manager,
                 abr,
                 BUFFER_DURATION,
-                slope=1.0,
             )
         )
         scheduler: Scheduler = BETASchedulerImpl(

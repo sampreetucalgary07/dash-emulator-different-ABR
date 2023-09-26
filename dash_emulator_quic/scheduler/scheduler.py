@@ -79,21 +79,8 @@ class BETASchedulerImpl(BETAScheduler):
         self._dropped_index = None
 
     def slope_estimator(self, qual_list):
-        x = np.arange(len(qual_list))  # Create x-values as indices of data points
+        x = np.arange(len(qual_list))
         slope, _, _, _, _ = stats.linregress(x, qual_list)
-        # differences = [
-        #     qual_list[i + 1] - qual_list[i] for i in range(len(qual_list) - 1)
-        # ]
-        # if all(diff > 0 for diff in differences):
-        #     s = True
-        # if slope > 1.5:
-        #     slope = 2
-        # elif slope <= 1.5:
-        #     slope = 1
-        # else:
-        #     slope = 0
-
-        # return slope
         print("slope : ", slope)
         if slope > 0.33:
             return 1
@@ -132,6 +119,7 @@ class BETASchedulerImpl(BETAScheduler):
             if logic == True and len(self.qual_list) > 3:
                 slope = self.slope_estimator(self.qual_list[-3:])
                 self.log.info(f"slope={slope}")
+                print("Slope : ", slope)
                 self._current_selections[0] = self._current_selections[0] + slope
                 if self._current_selections[0] > 6:
                     self._current_selections[0] = 6

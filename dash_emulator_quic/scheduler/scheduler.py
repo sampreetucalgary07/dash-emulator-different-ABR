@@ -124,8 +124,6 @@ class BETASchedulerImpl(BETAScheduler):
 
             self._current_selections = selections
             self.log.info(f"selections before logic ={self._current_selections}")
-            self.qual_list.append(self._current_selections[0])
-            self.log.info(f"qual_list={self.qual_list}")
 
             # Select if you want to implement logic
             logic = True
@@ -137,6 +135,9 @@ class BETASchedulerImpl(BETAScheduler):
                 self._current_selections[0] = self._current_selections[0] + slope
                 if self._current_selections[0] > 6:
                     self._current_selections[0] = 6
+
+            self.qual_list.append(self._current_selections[0])
+            self.log.info(f"qual_list={self.qual_list}")
 
             self.log.info(f"selections after logic ={self._current_selections}")
 

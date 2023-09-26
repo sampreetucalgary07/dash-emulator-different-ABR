@@ -113,7 +113,7 @@ class BETASchedulerImpl(BETAScheduler):
             self.log.info(f"selections before logic ={self._current_selections}")
 
             # Select if you want to implement logic
-            logic = True
+            logic = False
 
             # calculate slope
             if logic == True and len(self.qual_list) > 3:

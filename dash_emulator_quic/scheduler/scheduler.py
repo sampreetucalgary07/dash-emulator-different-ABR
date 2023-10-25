@@ -78,12 +78,12 @@ class BETASchedulerImpl(BETAScheduler):
         self._end = False
         self._dropped_index = None
 
-    def slope_estimator(self, qual_list):
+    def slope_estimator(self, qual_list, slope_threshold=0.33, red_QL = 1):
         x = np.arange(len(qual_list))
         slope, _, _, _, _ = stats.linregress(x, qual_list)
 
-        if slope > 0.33:
-            return 1
+        if slope > slope_threshold:
+            return red_QL
         else:
             return 0
 
@@ -114,10 +114,11 @@ class BETASchedulerImpl(BETAScheduler):
 
             # Select if you want to implement logic
             logic = True
-
+            num_previous_samples = 3
             # calculate slope
-            if logic == True and len(self.qual_list) > 3:
-                slope = self.slope_estimator(self.qual_list[-3:])
+            if logic == True and len(self.qual_list) > num_previous_samples:
+                n = int(-1 * num_previous_samples)
+                slope = self.slope_estimator(self.qual_list[n:], slope_threshold=0.33, red_QL = 1)
                 self.log.info(f"slope={slope}")
                 print("slope : ", slope)
                 self._current_selections[0] = self._current_selections[0] + slope

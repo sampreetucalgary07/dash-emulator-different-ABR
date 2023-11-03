@@ -5,7 +5,7 @@ from setuptools import find_packages, setup
 requirements = [
     "wsproto",
     "uvloop",
-    "aiohttp",
+    # "aiohttp",
     "requests",
     "matplotlib",
     "behave",

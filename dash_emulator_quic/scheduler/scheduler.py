@@ -86,9 +86,10 @@ class BETASchedulerImpl(BETAScheduler):
         mean_X = sum(X) / len(X)
         mean_Y = sum(qual_list) / len(qual_list)
 
-        # Calculate the coefficients (slope and intercept) of the linear regression equation
+        # Calculate the slope of the linear regression equation
         numerator = sum((X[i] - mean_X) * (Y[i] - mean_Y) for i in range(len(X)))
         denominator = sum((X[i] - mean_X) ** 2 for i in range(len(X)))
+        print("Slope : ", slope)
         slope = numerator / denominator
         if slope > slope_threshold:
             return reduce_QL

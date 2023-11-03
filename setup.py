@@ -10,7 +10,6 @@ requirements = [
     "matplotlib",
     "behave",
     "aioquic",
-    "matplotlib",
     "pyyaml",
     "dash-emulator @ git+https://github.com/sampreetucalgary07/dash-emulator#egg=dash-emulator",
 ]
@@ -21,7 +20,7 @@ setup(
     description="A headless player to emulate the playback of MPEG-DASH streams over QUIC",
     author="Yang Liu",
     author_email="yang.jace.liu@linux.com",
-    url="https://github.com/navidakbari/dash-emulator-quic",
+    url="https://github.com/navidakbari/dash-emulator-different-ABR/",
     packages=find_packages(),
     scripts=["scripts/dash-emulator.py", "scripts/dash-emulator-analyze.py"],
     install_requires=requirements,

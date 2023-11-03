@@ -4,7 +4,8 @@ from abc import ABC, abstractmethod
 from asyncio import Task
 from typing import Dict, Optional, Set, List
 import numpy as np
-from scipy import stats
+
+# from scipy import stats
 
 from dash_emulator.bandwidth import BandwidthMeter
 from dash_emulator.buffer import BufferManager
@@ -78,12 +79,19 @@ class BETASchedulerImpl(BETAScheduler):
         self._end = False
         self._dropped_index = None
 
-    def slope_estimator(self, qual_list, slope_threshold=0.33, red_QL = 1):
-        x = np.arange(len(qual_list))
-        slope, _, _, _, _ = stats.linregress(x, qual_list)
+    def slope_estimator(self, qual_list, slope_threshold=0.33, reduce_QL=1):
+        X = np.arange(len(qual_list))
+        # slope, _, _, _, _ = stats.linregress(x, qual_list)
+        # Calculate the mean of X and Y
+        mean_X = sum(X) / len(X)
+        mean_Y = sum(qual_list) / len(qual_list)
 
+        # Calculate the coefficients (slope and intercept) of the linear regression equation
+        numerator = sum((X[i] - mean_X) * (Y[i] - mean_Y) for i in range(len(X)))
+        denominator = sum((X[i] - mean_X) ** 2 for i in range(len(X)))
+        slope = numerator / denominator
         if slope > slope_threshold:
-            return red_QL
+            return reduce_QL
         else:
             return 0
 
@@ -118,7 +126,9 @@ class BETASchedulerImpl(BETAScheduler):
             # calculate slope
             if logic == True and len(self.qual_list) > num_previous_samples:
                 n = int(-1 * num_previous_samples)
-                slope = self.slope_estimator(self.qual_list[n:], slope_threshold=0.33, red_QL = 1)
+                slope = self.slope_estimator(
+                    self.qual_list[n:], slope_threshold=0.33, red_QL=1
+                )
                 self.log.info(f"slope={slope}")
                 print("slope : ", slope)
                 self._current_selections[0] = self._current_selections[0] + slope

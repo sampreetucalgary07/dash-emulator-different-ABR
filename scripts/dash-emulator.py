@@ -17,6 +17,8 @@ log = logging.getLogger(__name__)
 
 PLAYER_TARGET = "target"
 
+print("All imports are done !! ")
+
 
 def create_parser():
     arg_parser = argparse.ArgumentParser(description="Accept for the emulator")

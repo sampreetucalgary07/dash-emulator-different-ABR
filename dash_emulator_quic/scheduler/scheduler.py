@@ -5,7 +5,7 @@ from asyncio import Task
 from typing import Dict, Optional, Set, List
 import numpy as np
 
-# from scipy import stats
+from scipy import stats
 
 from dash_emulator.bandwidth import BandwidthMeter
 from dash_emulator.buffer import BufferManager

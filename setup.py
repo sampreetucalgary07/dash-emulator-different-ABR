@@ -10,6 +10,7 @@ requirements = [
     "matplotlib",
     "behave",
     "aioquic",
+    "scipy",
     "pyyaml",
     "dash-emulator @ git+https://github.com/sampreetucalgary07/dash-emulator#egg=dash-emulator",
 ]

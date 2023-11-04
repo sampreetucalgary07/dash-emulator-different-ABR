@@ -11,7 +11,6 @@ requirements = [
     "aioquic",
     "scipy",
     "pyyaml",
-    "dash-emulator @ git+https://github.com/sampreetucalgary07/dash-emulator#egg=dash-emulator",
 ]
 # https://github.com/navidakbari/dash-emulator#egg=dash-emulator
 setup(

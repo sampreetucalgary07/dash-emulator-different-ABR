@@ -121,25 +121,25 @@ class BETASchedulerImpl(BETAScheduler):
             self._current_selections = selections
             self.log.info(f"selections before logic ={self._current_selections}")
 
-            # Select if you want to implement logic
-            logic = True
-            num_previous_samples = 3
-            # calculate slope
-            if logic == True and len(self.qual_list) > num_previous_samples:
-                n = int(-1 * num_previous_samples)
-                slope = self.slope_estimator(
-                    self.qual_list[n:], slope_threshold=0.33, red_QL=1
-                )
-                self.log.info(f"slope={slope}")
-                print("slope : ", slope)
-                self._current_selections[0] = self._current_selections[0] + slope
-                if self._current_selections[0] > 6:
-                    self._current_selections[0] = 6
+            # # Select if you want to implement logic
+            # logic = True
+            # num_previous_samples = 3
+            # # calculate slope
+            # if logic == True and len(self.qual_list) > num_previous_samples:
+            #     n = int(-1 * num_previous_samples)
+            #     slope = self.slope_estimator(
+            #         self.qual_list[n:], slope_threshold=0.33, red_QL=1
+            #     )
+            #     self.log.info(f"slope={slope}")
+            #     print("slope : ", slope)
+            #     self._current_selections[0] = self._current_selections[0] + slope
+            #     if self._current_selections[0] > 6:
+            #         self._current_selections[0] = 6
 
-            self.qual_list.append(self._current_selections[0])
-            self.log.info(f"qual_list={self.qual_list}")
+            # self.qual_list.append(self._current_selections[0])
+            # self.log.info(f"qual_list={self.qual_list}")
 
-            self.log.info(f"selections after logic ={self._current_selections}")
+            # self.log.info(f"selections after logic ={self._current_selections}")
 
             for listener in self.listeners:
                 await listener.on_segment_download_start(self._index, selections)

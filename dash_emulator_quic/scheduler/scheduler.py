@@ -123,7 +123,7 @@ class BETASchedulerImpl(BETAScheduler):
 
             # Select if you want to implement logic
             logic = True
-            num_previous_samples = 2
+            num_previous_samples = 3
             # calculate slope
             if logic == True and len(self.qual_list) > num_previous_samples:
                 n = int(-1 * num_previous_samples)

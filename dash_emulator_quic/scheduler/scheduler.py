@@ -79,7 +79,7 @@ class BETASchedulerImpl(BETAScheduler):
         self._end = False
         self._dropped_index = None
 
-    def slope_estimator(self, qual_list, slope_threshold=0.33, reduce_QL=1):
+    def slope_estimator(self, qual_list, slope_threshold=0, reduce_QL=1):
         X = np.arange(len(qual_list))
         slope, _, _, _, _ = stats.linregress(X, qual_list)
         # Calculate the mean of X and Y
@@ -123,7 +123,7 @@ class BETASchedulerImpl(BETAScheduler):
 
             # Select if you want to implement logic
             logic = True
-            num_previous_samples = 7
+            num_previous_samples = 4
             # calculate slope
             if logic == True and len(self.qual_list) > num_previous_samples:
                 n = int(-1 * num_previous_samples)

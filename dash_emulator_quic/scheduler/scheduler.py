@@ -128,7 +128,7 @@ class BETASchedulerImpl(BETAScheduler):
             if logic == True and len(self.qual_list) > num_previous_samples:
                 n = int(-1 * num_previous_samples)
                 slope = self.slope_estimator(
-                    self.qual_list[n:], slope_threshold=0.33, reduce_QL=1
+                    self.qual_list[n:], slope_threshold=0, reduce_QL=1
                 )
                 self.log.info(f"slope={slope}")
                 print("slope : ", slope)

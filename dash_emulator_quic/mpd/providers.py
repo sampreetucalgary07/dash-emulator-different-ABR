@@ -11,7 +11,9 @@ from dash_emulator_quic.downloader.client import QuicClient
 
 
 class BETAMPDProviderImpl(MPDProvider):
-    def __init__(self, parser: MPDParser, update_interval: float, download_manager: QuicClient):
+    def __init__(
+        self, parser: MPDParser, update_interval: float, download_manager: QuicClient
+    ):
         """
         Parameters
         ----------
@@ -38,6 +40,11 @@ class BETAMPDProviderImpl(MPDProvider):
     async def update(self):
         await self.download_manager.download(self.mpd_url, save=True)
         content, size = await self.download_manager.wait_complete(self.mpd_url)
+        print("Dash Emulator Quic")
+        print(content)
+        print(size)
+        print(self.mpd_url + " is downloaded")
+
         text = content.decode("utf-8")
         self._mpd = self.parser.parse(text, url=self.mpd_url)
 

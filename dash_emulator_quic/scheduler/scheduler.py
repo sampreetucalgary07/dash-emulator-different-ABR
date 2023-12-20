@@ -91,10 +91,11 @@ class BETASchedulerImpl(BETAScheduler):
         # denominator = sum((X[i] - mean_X) ** 2 for i in range(len(X)))
         # print("Slope : ", slope)
         # slope = numerator / denominator
+
         if slope > slope_threshold:
-            return reduce_QL
+            return slope, reduce_QL
         else:
-            return 0
+            return slope, 0
 
     async def loop(self):
         self.qual_list = []
@@ -120,26 +121,29 @@ class BETASchedulerImpl(BETAScheduler):
 
             self._current_selections = selections
             self.log.info(f"selections before logic ={self._current_selections}")
+            print("selections before logic : ", self._current_selections)
 
             # Select if you want to implement logic
             logic = True
-            num_previous_samples = 4
+            num_previous_samples = 3
             # calculate slope
             if logic == True and len(self.qual_list) > num_previous_samples:
                 n = int(-1 * num_previous_samples)
-                slope = self.slope_estimator(
-                    self.qual_list[n:], slope_threshold=0.33, reduce_QL=5
+                slope, red_value = self.slope_estimator(
+                    self.qual_list[n:], slope_threshold=0.33, reduce_QL=1
                 )
                 self.log.info(f"slope={slope}")
                 print("slope : ", slope)
-                self._current_selections[0] = self._current_selections[0] + slope
+                self._current_selections[0] = self._current_selections[0] + red_value
                 if self._current_selections[0] > 6:
                     self._current_selections[0] = 6
 
             self.qual_list.append(self._current_selections[0])
             self.log.info(f"qual_list={self.qual_list}")
+            print("qual_list : ", self.qual_list)
 
             self.log.info(f"selections after logic ={self._current_selections}")
+            print("selections after logic : ", self._current_selections)
 
             for listener in self.listeners:
                 await listener.on_segment_download_start(self._index, selections)

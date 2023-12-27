@@ -124,7 +124,7 @@ class BETASchedulerImpl(BETAScheduler):
             print("selections before logic : ", self._current_selections)
 
             # Select if you want to implement logic
-            logic = True
+            logic = False
 
             num_previous_samples = 3
             # calculate slope

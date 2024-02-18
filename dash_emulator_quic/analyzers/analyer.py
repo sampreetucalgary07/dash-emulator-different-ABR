@@ -219,7 +219,7 @@ class BETAPlaybackAnalyzer(
 
         # Stalls
         output.write("Stalls:\n")
-        output.write("%-^10s%-^10s%-^10s\n" % ("Start", "End", "Duration"))
+        output.write("%-10s%-10s%-10s\n" % ("Start", "End", "Duration"))
         buffering_start = None
         buffer_info_list = []
         for time, state in self._states:
@@ -229,7 +229,7 @@ class BETAPlaybackAnalyzer(
                 if buffering_start is not None:
                     duration = time - buffering_start
                     output.write(
-                        "%-^10.2f%-^10.2f%-^10.2f\n" % (buffering_start, time, duration)
+                        "%-10.2f%-10.2f%-10.2f\n" % (buffering_start, time, duration)
                     )
                     buffer_info_list.append((buffering_start, time, duration))
                     total_stall_num += 1

@@ -149,7 +149,7 @@ class BETASchedulerImpl(BETAScheduler):
             for listener in self.listeners:
                 await listener.on_segment_download_start(self._index, selections)
             duration = 0
-            print("Selection (listener event start) : ", selection)   
+            ##print("Selection (listener event start) : ", selection)   
             urls = []
             for adaptation_set_id, selection in selections.items():
                 adaptation_set = self.adaptation_sets[adaptation_set_id]
@@ -184,7 +184,7 @@ class BETASchedulerImpl(BETAScheduler):
                 await listener.on_segment_download_complete(self._index)
             self._index += 1
             self.buffer_manager.enqueue_buffer(duration)
-            print("Selection (listener event Complete) : ", selection)   
+            #print("Selection (listener event Complete) : ", selection)   
 
     def start(self, adaptation_sets: Dict[int, AdaptationSet]):
         self.adaptation_sets = adaptation_sets

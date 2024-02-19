@@ -15,8 +15,8 @@ from dash_emulator.scheduler import Scheduler, SchedulerEventListener
 from dash_emulator_quic.abr import ExtendedABRController
 from dash_emulator_quic.downloader.client import QuicClient
 
-
-print(" ------------ ENtered the scheduler.py file from Different ABR folder-----------------  ")
+log = logging.getLogger("schedulerDiff.py")
+log.info(" ------------ ENtered the scheduler.py file from Different ABR folder-----------------  ")
 class BETAScheduler(Scheduler, ABC):
     @abstractmethod
     async def cancel_task(self, index):

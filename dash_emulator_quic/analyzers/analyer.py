@@ -15,7 +15,8 @@ from dash_emulator.mpd import MPDProvider
 from dash_emulator.player import PlayerEventListener
 from dash_emulator.scheduler import SchedulerEventListener
 
-from dash_emulator_quic.scheduler import BETASchedulerImpl
+
+from dash_emulator_quic.scheduler import BETAScheduler, BETASchedulerImpl
 
 
 class PlaybackAnalyzer(ABC):
@@ -73,7 +74,7 @@ class BETAPlaybackAnalyzer(
             AnalyzerSegment
         ] = []  # start time, completion time, quality selection, bandwidth
         self._segments_by_url: Dict[str, AnalyzerSegment] = {}
-        self.values_list = BETASchedulerImpl.return_values()
+        #self.values_list = BETASchedulerImpl.return_values()
 
         # index, start time, completion time, quality, bandwidth
         self._current_segment: Optional[AnalyzerSegment] = None
@@ -142,6 +143,12 @@ class BETAPlaybackAnalyzer(
     async def on_bandwidth_update(self, bw: int) -> None:
         self._throughputs.append((self._seconds_since(self._start_time), bw))
 
+    
+    def return_values(self, BetaschedulerImpl):
+        self.log.info(f"Values list: {self.values_list}")
+        betaSchedular_obj = BETASchedulerImpl(BETAScheduler)
+        self.value_list = betaSchedular_obj.return_values()
+    
     def _get_video_representation(self, representation_id):
         """
         Get the video representation of given representation id
@@ -256,6 +263,8 @@ class BETAPlaybackAnalyzer(
         output.write(f"Number of quality switches: {quality_switches}\n")
         
         output.write(f"Values list: {self.values_list}\n")
+        
+        
 
         if self.config.save_plots_dir is not None:
             self.save_plot()

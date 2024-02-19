@@ -221,7 +221,7 @@ class BETAPlaybackAnalyzer(
         output.write("Stalls:\n")
         output.write("%-10s%-10s%-10s\n" % ("Start", "End", "Duration"))
         buffering_start = None
-        buffer_info_list = []
+        stall_info_list = []
         for time, state in self._states:
             if state == State.BUFFERING:
                 buffering_start = time
@@ -231,14 +231,14 @@ class BETAPlaybackAnalyzer(
                     output.write(
                         "%-10.2f%-10.2f%-10.2f\n" % (buffering_start, time, duration)
                     )
-                    buffer_info_list.append((buffering_start, time, duration))
+                    stall_info_list.append((buffering_start, time, duration))
                     total_stall_num += 1
                     total_stall_duration += duration
                     buffering_start = None
 
         output.write("\n")
-        output.write("Buffering info list:\n")
-        output.write(buffer_info_list.__str__() + "\n")
+        output.write("Stall info list:\n")
+        output.write(stall_info_list.__str__() + "\n")
         
         # Stall summary
         output.write(f"Number of Stalls: {total_stall_num}\n")
@@ -258,9 +258,9 @@ class BETAPlaybackAnalyzer(
             self.dump_results(
                 self.config.dump_results_path,
                 self._segments,
-                
                 total_stall_num,
                 total_stall_duration,
+                stall_info_list,
                 average_bitrate,
                 quality_switches,
             )
@@ -271,6 +271,7 @@ class BETAPlaybackAnalyzer(
         segments: List[AnalyzerSegment],
         num_stall,
         dur_stall,
+        stall_info_list,
         avg_bitrate,
         num_quality_switches,
     ):
@@ -280,7 +281,7 @@ class BETAPlaybackAnalyzer(
                 "index": segment.index,
                 "start": segment.start_time,
                 "end": segment.completion_time,
-                "quality": segment.quality_selection,
+                "quality": segment.quality_selection, #quality requested by the player
                 "bitrate": segment.segment_bitrate,
                 "throughput": segment.bandwidth,
                 "ratio": segment.ratio,
@@ -290,8 +291,10 @@ class BETAPlaybackAnalyzer(
 
         data["num_stall"] = num_stall
         data["dur_stall"] = dur_stall
+        data["stall_info_list"] = stall_info_list
         data["avg_bitrate"] = avg_bitrate
         data["num_quality_switches"] = num_quality_switches
+        
         
 
         extra_index = 1

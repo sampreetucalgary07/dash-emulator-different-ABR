@@ -170,6 +170,7 @@ class BETASchedulerImpl(BETAScheduler):
                 except IndexError:
                     self._end = True
                     return
+                print("Selection : ", selection)    
                 urls.append(segment.url)
                 await self.download_manager.download(segment.url)
                 duration = segment.duration
@@ -228,3 +229,6 @@ class BETASchedulerImpl(BETAScheduler):
 
     async def drop_index(self, index):
         self._dropped_index = index
+
+    
+    

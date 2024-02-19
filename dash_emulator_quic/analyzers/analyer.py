@@ -16,7 +16,7 @@ from dash_emulator.player import PlayerEventListener
 from dash_emulator.scheduler import SchedulerEventListener
 
 
-from dash_emulator_quic.scheduler import BETAScheduler, BETASchedulerImpl
+#from dash_emulator_quic.scheduler import BETAScheduler, BETASchedulerImpl
 
 
 class PlaybackAnalyzer(ABC):
@@ -59,7 +59,6 @@ class BETAPlaybackAnalyzer(
     SchedulerEventListener,
     DownloadEventListener,
     BandwidthUpdateListener,
-    BETASchedulerImpl,
 ):
     log = logging.getLogger("BETAPlaybackAnalyzer")
 
@@ -142,12 +141,6 @@ class BETAPlaybackAnalyzer(
 
     async def on_bandwidth_update(self, bw: int) -> None:
         self._throughputs.append((self._seconds_since(self._start_time), bw))
-
-    
-    def return_values(self, BetaschedulerImpl):
-        self.log.info(f"Values list: {self.values_list}")
-        betaSchedular_obj = BETASchedulerImpl(BETAScheduler)
-        self.value_list = betaSchedular_obj.return_values()
     
     def _get_video_representation(self, representation_id):
         """
@@ -261,9 +254,6 @@ class BETAPlaybackAnalyzer(
 
         # Number of quality switches
         output.write(f"Number of quality switches: {quality_switches}\n")
-        
-        output.write(f"Values list: {self.values_list}\n")
-        
         
 
         if self.config.save_plots_dir is not None:

@@ -141,7 +141,7 @@ class BETASchedulerImpl(BETAScheduler):
 
             self.qual_list.append(self._current_selections[0])
             self.log.info(f"qual_list={self.qual_list}")
-            print("qual_list : ", self.qual_list)
+            #print("qual_list : ", self.qual_list)
 
             self.log.info(f"selections after logic ={self._current_selections}")
             print("selections after logic : ", self._current_selections)
@@ -149,6 +149,7 @@ class BETASchedulerImpl(BETAScheduler):
             for listener in self.listeners:
                 await listener.on_segment_download_start(self._index, selections)
             duration = 0
+            print("Selection (listener event start) : ", selection)   
             urls = []
             for adaptation_set_id, selection in selections.items():
                 adaptation_set = self.adaptation_sets[adaptation_set_id]
@@ -170,7 +171,7 @@ class BETASchedulerImpl(BETAScheduler):
                 except IndexError:
                     self._end = True
                     return
-                print("Selection : ", selection)    
+                 
                 urls.append(segment.url)
                 await self.download_manager.download(segment.url)
                 duration = segment.duration
@@ -183,6 +184,7 @@ class BETASchedulerImpl(BETAScheduler):
                 await listener.on_segment_download_complete(self._index)
             self._index += 1
             self.buffer_manager.enqueue_buffer(duration)
+            print("Selection (listener event Complete) : ", selection)   
 
     def start(self, adaptation_sets: Dict[int, AdaptationSet]):
         self.adaptation_sets = adaptation_sets
@@ -195,9 +197,6 @@ class BETASchedulerImpl(BETAScheduler):
         await self.download_manager.close()
         if self._task is not None:
             self._task.cancel()
-    
-    def return_values(self):
-        return self.qual_list 
     
     @property
     def is_end(self):

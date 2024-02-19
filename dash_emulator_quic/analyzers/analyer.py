@@ -15,6 +15,8 @@ from dash_emulator.mpd import MPDProvider
 from dash_emulator.player import PlayerEventListener
 from dash_emulator.scheduler import SchedulerEventListener
 
+from dash_emulator_quic.scheduler import BETASchedulerImpl
+
 
 class PlaybackAnalyzer(ABC):
     @abstractmethod
@@ -56,6 +58,7 @@ class BETAPlaybackAnalyzer(
     SchedulerEventListener,
     DownloadEventListener,
     BandwidthUpdateListener,
+    BETASchedulerImpl,
 ):
     log = logging.getLogger("BETAPlaybackAnalyzer")
 
@@ -70,6 +73,7 @@ class BETAPlaybackAnalyzer(
             AnalyzerSegment
         ] = []  # start time, completion time, quality selection, bandwidth
         self._segments_by_url: Dict[str, AnalyzerSegment] = {}
+        self.values_list = BETASchedulerImpl.return_values()
 
         # index, start time, completion time, quality, bandwidth
         self._current_segment: Optional[AnalyzerSegment] = None
@@ -250,6 +254,8 @@ class BETAPlaybackAnalyzer(
 
         # Number of quality switches
         output.write(f"Number of quality switches: {quality_switches}\n")
+        
+        output.write(f"Values list: {self.values_list}\n")
 
         if self.config.save_plots_dir is not None:
             self.save_plot()

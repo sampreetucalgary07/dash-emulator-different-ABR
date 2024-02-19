@@ -195,7 +195,10 @@ class BETASchedulerImpl(BETAScheduler):
         await self.download_manager.close()
         if self._task is not None:
             self._task.cancel()
-
+    
+    def return_values(self):
+        return self.qual_list 
+    
     @property
     def is_end(self):
         return self._end

@@ -16,6 +16,7 @@ from dash_emulator.player import PlayerEventListener
 from dash_emulator.scheduler import SchedulerEventListener
 
 
+print(" ------------ ENtered the analyzer.py file -----------------  ")
 #from dash_emulator_quic.scheduler import BETAScheduler, BETASchedulerImpl
 
 

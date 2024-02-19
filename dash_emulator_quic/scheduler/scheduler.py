@@ -15,8 +15,7 @@ from dash_emulator.scheduler import Scheduler, SchedulerEventListener
 from dash_emulator_quic.abr import ExtendedABRController
 from dash_emulator_quic.downloader.client import QuicClient
 
-log = logging.getLogger("schedulerDiff.py")
-log.info(" ------------ ENtered the scheduler.py file from Different ABR folder-----------------  ")
+
 class BETAScheduler(Scheduler, ABC):
     @abstractmethod
     async def cancel_task(self, index):
@@ -101,7 +100,7 @@ class BETASchedulerImpl(BETAScheduler):
     async def loop(self):
         self.qual_list = []
         # self.log.info("Slope is 1.0")
-        self.log.info("BETA: Start scheduler loop")
+        self.log.info("BETA: Start scheduler loop from dash_emulator_quic")
         while True:
             # Check buffer level
             if self.buffer_manager.buffer_level > self.max_buffer_duration:

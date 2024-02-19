@@ -15,8 +15,6 @@ from dash_emulator.mpd import MPDProvider
 from dash_emulator.player import PlayerEventListener
 from dash_emulator.scheduler import SchedulerEventListener
 
-log = logging.getLogger("analyzer.py")
-log.info(" ------------ ENtered the analyzer.py file -----------------  ")
 #from dash_emulator_quic.scheduler import BETAScheduler, BETASchedulerImpl
 
 
@@ -62,7 +60,7 @@ class BETAPlaybackAnalyzer(
     BandwidthUpdateListener,
 ):
     log = logging.getLogger("BETAPlaybackAnalyzer")
-
+    log.info("Entered into BETAPlaybackAnalyzer")
     def __init__(self, config: BETAPlaybackAnalyzerConfig, mpd_provider: MPDProvider):
         self.config = config
         self._mpd_provider = mpd_provider

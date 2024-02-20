@@ -14,7 +14,7 @@ from dash_emulator.mpd import MPDProvider
 from dash_emulator.player import PlayerEventListener
 from dash_emulator.scheduler import SchedulerEventListener
 
-#from dash_emulator_quic.scheduler import BETAScheduler, BETASchedulerImpl
+# from dash_emulator_quic.scheduler import BETAScheduler, BETASchedulerImpl
 
 
 class PlaybackAnalyzer(ABC):
@@ -65,11 +65,11 @@ class BETAPlaybackAnalyzer(
         self._buffer_levels: List[Tuple[float, float]] = []
         self._throughputs: List[Tuple[float, int]] = []
         self._states: List[Tuple[float, State]] = []
-        self._segments: List[
-            AnalyzerSegment
-        ] = []  # start time, completion time, quality selection, bandwidth
+        self._segments: List[AnalyzerSegment] = (
+            []
+        )  # start time, completion time, quality selection, bandwidth
         self._segments_by_url: Dict[str, AnalyzerSegment] = {}
-        #self.values_list = BETASchedulerImpl.return_values()
+        # self.values_list = BETASchedulerImpl.return_values()
 
         # index, start time, completion time, quality, bandwidth
         self._current_segment: Optional[AnalyzerSegment] = None
@@ -137,7 +137,7 @@ class BETAPlaybackAnalyzer(
 
     async def on_bandwidth_update(self, bw: int) -> None:
         self._throughputs.append((self._seconds_since(self._start_time), bw))
-    
+
     def _get_video_representation(self, representation_id):
         """
         Get the video representation of given representation id
@@ -169,16 +169,15 @@ class BETAPlaybackAnalyzer(
         representation = adaptation_set.representations[representation_id]
         return representation
 
-    def process_super_list(self, super_list, defuault_list):
+    def process_super_list(self, super_list, default_list):
         self.qual_list = super_list[0]
         self.selection_before_logic = super_list[1]
         self.selection_after_logic = super_list[2]
         self.slope_values = super_list[3]
         self.logic_values = super_list[4]
-        self.num_previous_samples = defuault_list[0]
-        self.slope_threshold = defuault_list[1]
-        
-        
+        self.num_previous_sample = default_list[0]
+        self.slope_thre = default_list[1]
+
     def save(self, output: io.TextIOBase) -> None:
         bitrates = []
 
@@ -199,15 +198,23 @@ class BETAPlaybackAnalyzer(
             "URL",
         )
         output.write("Length of the qual : " + str(len(self.qual_list)) + "\n")
-        output.write("Length of the SBL list : " + str(len(self.selection_before_logic)) + "\n")
-        output.write("Length of the SAL list : " + str(len(self.selection_after_logic)) + "\n")
+        output.write(
+            "Length of the SBL list : " + str(len(self.selection_before_logic)) + "\n"
+        )
+        output.write(
+            "Length of the SAL list : " + str(len(self.selection_after_logic)) + "\n"
+        )
         output.write("Length of the slope list : " + str(len(self.slope_values)) + "\n")
         output.write("Length of the logic list : " + str(len(self.logic_values)) + "\n")
-        output.write("Length of the num_previous_samples : " + str(self.num_previous_samples) + "\n")
-        output.write("Length of the slope_threshold : " + str(self.slope_threshold) + "\n")
-        
+        output.write(
+            "Length of the num_previous_samples : "
+            + str(self.num_previous_sample)
+            + "\n"
+        )
+        output.write("Length of the slope_threshold : " + str(self.slope_thre) + "\n")
+
         output.write("%-10s%-10s%-10s%-10s%-10s%-10s%-10s%-20s\n" % headers)
-        
+
         for index, segment in enumerate(self._segments):
             if last_quality is None:
                 # First segment
@@ -258,7 +265,7 @@ class BETAPlaybackAnalyzer(
         output.write("\n")
         output.write("Stall info list:\n")
         output.write(stall_info_list.__str__() + "\n")
-        
+
         # Stall summary
         output.write(f"Number of Stalls: {total_stall_num}\n")
         output.write(f"Total seconds of stalls: {total_stall_duration}\n")
@@ -269,7 +276,6 @@ class BETAPlaybackAnalyzer(
 
         # Number of quality switches
         output.write(f"Number of quality switches: {quality_switches}\n")
-        
 
         if self.config.save_plots_dir is not None:
             self.save_plot()
@@ -301,7 +307,7 @@ class BETAPlaybackAnalyzer(
                 "index": segment.index,
                 "start": segment.start_time,
                 "end": segment.completion_time,
-                "quality": segment.quality_selection, #quality requested by the player
+                "quality": segment.quality_selection,  # quality requested by the player
                 "bitrate": segment.segment_bitrate,
                 "throughput": segment.bandwidth,
                 "ratio": segment.ratio,
@@ -314,8 +320,6 @@ class BETAPlaybackAnalyzer(
         data["stall_info_list"] = stall_info_list
         data["avg_bitrate"] = avg_bitrate
         data["num_quality_switches"] = num_quality_switches
-        
-        
 
         extra_index = 1
         final_path = f"{path}-{extra_index}.json"

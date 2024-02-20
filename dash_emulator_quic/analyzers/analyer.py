@@ -171,8 +171,8 @@ class BETAPlaybackAnalyzer(
 
     def process_super_list(self, super_list, default_list):
         self.qual_list = super_list[0]
-        self.selection_before_logic = super_list[1]
-        self.selection_after_logic = super_list[2]
+        self.SBL_list = super_list[1]
+        self.SAL_list = super_list[2]
         self.slope_values = super_list[3]
         self.logic_values = super_list[4]
         self.selected_Values_list = super_list[5]
@@ -199,12 +199,8 @@ class BETAPlaybackAnalyzer(
             "URL",
         )
         output.write("Length of the qual : " + str(len(self.qual_list)) + "\n")
-        output.write(
-            "Length of the SBL list : " + str(len(self.selection_before_logic)) + "\n"
-        )
-        output.write(
-            "Length of the SAL list : " + str(len(self.selection_after_logic)) + "\n"
-        )
+        output.write("Length of the SBL list : " + str(len(self.SBL_list)) + "\n")
+        output.write("Length of the SAL list : " + str(len(self.SAL_list)) + "\n")
         output.write("Length of the slope list : " + str(len(self.slope_values)) + "\n")
         output.write("Length of the logic list : " + str(len(self.logic_values)) + "\n")
         output.write(
@@ -304,8 +300,8 @@ class BETAPlaybackAnalyzer(
                 stall_info_list,
                 average_bitrate,
                 quality_switches,
-                self.selection_before_logic,
-                self.selection_after_logic,
+                self.SBL_list,
+                self.SAL_list,
                 self.slope_values,
                 self.logic_values,
                 self.selected_Values_list,
@@ -322,8 +318,8 @@ class BETAPlaybackAnalyzer(
         stall_info_list,
         avg_bitrate,
         num_quality_switches,
-        selection_before_logic,
-        selection_after_logic,
+        SAL,
+        SBL,
         slope_values,
         logic_values,
         selected_Values_list,
@@ -334,8 +330,8 @@ class BETAPlaybackAnalyzer(
         data = {"segments": []}
         for segment, svb, sal, slope_value, logic, selected_values in zip(
             segments,
-            selection_before_logic,
-            selection_after_logic,
+            SAL,
+            SBL,
             slope_values,
             logic_values,
             selected_Values_list,

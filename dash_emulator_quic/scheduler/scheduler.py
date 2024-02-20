@@ -238,9 +238,7 @@ class BETASchedulerImpl(BETAScheduler):
     async def drop_index(self, index):
         self._dropped_index = index
 
-    def get_selections(
-        self,
-    ):
+    def print_statements(self):
         print(
             "Selection before logic  in the get selection function: ",
             self.selection_before_logic,
@@ -249,6 +247,8 @@ class BETASchedulerImpl(BETAScheduler):
             "Selection after logic  in the get selection function: ",
             self.selection_after_logic,
         )
+
+    def get_selections(self):
         super_list = [
             self.qual_list,
             self.selection_before_logic,

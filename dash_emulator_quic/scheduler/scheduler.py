@@ -102,14 +102,6 @@ class BETASchedulerImpl(BETAScheduler):
         self.qual_list = []
         self.SBL_list = []
         self.SAL_list = []
-        curr_dir = os.getcwd()
-        # curr_dir = os.getcwd()
-        # with open(
-        #     "/Users/thispc/Gitlab/iStream/iStream/Results/VanilaResults/", "w"
-        # ) as f:
-        #     json.dump({}, f)
-        # with open(os.getcwd + "/values_list.json", "w") as f:
-        #     json.dump({}, f)
 
         self.log.info("BETA: Start scheduler loop from dash_emulator_quic")
         while True:
@@ -130,11 +122,6 @@ class BETASchedulerImpl(BETAScheduler):
             else:
                 selections = self.abr_controller.update_selection(self.adaptation_sets)
 
-            # with open(
-            #     "/Users/thispc/Gitlab/iStream/iStream/Results/VanilaResults/", "w"
-            # ) as f:
-            #     current_data = json.dump({}, f)
-
             print("index : ", self._index)
 
             # current_data[self._index] = {}
@@ -143,9 +130,6 @@ class BETASchedulerImpl(BETAScheduler):
             self.log.info(f"Selections before logic ={self._current_selections}")
             # self.selection_before_logic.append(self._current_selections[0])
             print("Selections_before_logic : ", self._current_selections[0])
-            self.SBL_list.append(self._current_selections[0])
-            with open(curr_dir + "/SBL_list.json", "w") as f:
-                json.dump(self.SBL_list, f)
             # SBL = self._current_selections
             # current_data[self._index]["SBL"] = self._current_selections
 
@@ -168,9 +152,7 @@ class BETASchedulerImpl(BETAScheduler):
                     self._current_selections[0] = 6
 
             print("Selections_after_logic : ", self._current_selections[0])
-            self.SAL_list.append(self._current_selections[0])
-            with open(curr_dir + "/SAL_list.json", "w") as f:
-                json.dump(self.SAL_list, f)
+
             # current_data[self._index]["SAL"] = self._current_selections
             # SAL = self._current_selections
             print("Selected_values : ", selected_values)
@@ -181,8 +163,7 @@ class BETASchedulerImpl(BETAScheduler):
             self.qual_list.append(self._current_selections[0])
 
             # close the file
-            with open(curr_dir + "/qual_list.json", "w") as f:
-                json.dump(self.qual_list, f)
+
             # open a .json file in the current directory and write the list to it
             # print(curr_dir)
 

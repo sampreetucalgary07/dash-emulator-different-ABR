@@ -241,18 +241,18 @@ class BETASchedulerImpl(BETAScheduler):
     def get_selections(
         self,
     ):
+        print(
+            "Selection before logic  in the get selection function: ",
+            self.selection_before_logic,
+        )
+        print(
+            "Selection after logic  in the get selection function: ",
+            self.selection_after_logic,
+        )
         super_list = [
             self.qual_list,
             self.selection_before_logic,
-            print(
-                "Selection before logic  in the get selection function: ",
-                self.selection_before_logic,
-            ),
             self.selection_after_logic,
-            print(
-                "Selection after logic  in the get selection function: ",
-                self.selection_after_logic,
-            ),
             self.slope_values,
             self.logic_values,
             self.selected_values_list,

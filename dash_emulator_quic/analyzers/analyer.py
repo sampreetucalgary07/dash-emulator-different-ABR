@@ -215,12 +215,8 @@ class BETAPlaybackAnalyzer(
             + "\n"
         )
         output.write("\nQList from logic function:\n" + self.qual_list.__str__() + "\n")
-        output.write(
-            "Selection before logic:\n" + self.selection_before_logic.__str__() + "\n"
-        )
-        output.write(
-            "Selection after logic:\n" + self.selection_after_logic.__str__() + "\n"
-        )
+        output.write("Selection before logic:\n" + self.SBL_list.__str__() + "\n")
+        output.write("Selection after logic:\n" + self.SAL_list.__str__() + "\n")
 
         output.write("%-10s%-10s%-10s%-10s%-10s%-10s%-10s%-20s\n" % headers)
 

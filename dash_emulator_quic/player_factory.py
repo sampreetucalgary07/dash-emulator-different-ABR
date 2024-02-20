@@ -112,6 +112,10 @@ def build_dash_player_over_quic(
             abr_controller,
             [event_logger, analyzer],
         )
+        
+        super_list_values = scheduler.get_selections()
+        analyzer.process_super_list(super_list_values)
+        
         # print(type(abr_controller))
         # print(abr_controller)
         return (
@@ -126,7 +130,7 @@ def build_dash_player_over_quic(
             ),
             analyzer,
         )
-    else:  # this is NOT the case
+    else: #---------------------------  # this is NOT the case ---------------------------------------------------------------------------------
         cfg = Config
         buffer_manager: BufferManager = BufferManagerImpl()
         event_logger = EventLogger()

@@ -78,6 +78,10 @@ class BETASchedulerImpl(BETAScheduler):
 
         self._end = False
         self._dropped_index = None
+        self.qual_list = []
+        self.selection_before_logic = []
+        self.selection_after_logic = []
+        self.slope_values = []
 
     def slope_estimator(self, qual_list, slope_threshold=-0.33, reduce_QL=1):
         X = np.arange(len(qual_list))
@@ -98,7 +102,7 @@ class BETASchedulerImpl(BETAScheduler):
             return slope, 0
 
     async def loop(self):
-        self.qual_list = []
+        
         # self.log.info("Slope is 1.0")
         self.log.info("BETA: Start scheduler loop from dash_emulator_quic")
         while True:
@@ -121,6 +125,7 @@ class BETASchedulerImpl(BETAScheduler):
 
             self._current_selections = selections
             self.log.info(f"selections before logic ={self._current_selections}")
+            self.selection_before_logic.append(self._current_selections)
             print("selections before logic : ", self._current_selections)
 
             # Select if you want to implement logic
@@ -134,7 +139,9 @@ class BETASchedulerImpl(BETAScheduler):
                     self.qual_list[n:], slope_threshold=0.33, reduce_QL=1
                 )
                 self.log.info(f"slope={slope}")
+                self.slope_values.append(slope)
                 print("slope : ", slope)
+                
                 self._current_selections[0] = self._current_selections[0] + red_value
                 if self._current_selections[0] > 6:
                     self._current_selections[0] = 6
@@ -144,6 +151,7 @@ class BETASchedulerImpl(BETAScheduler):
             #print("qual_list : ", self.qual_list)
 
             self.log.info(f"selections after logic ={self._current_selections}")
+            self.selection_after_logic.append(self._current_selections)
             print("selections after logic : ", self._current_selections)
 
             for listener in self.listeners:
@@ -185,6 +193,7 @@ class BETASchedulerImpl(BETAScheduler):
             self._index += 1
             self.buffer_manager.enqueue_buffer(duration)
             #print("Selection (listener event Complete) : ", selection)   
+            
 
     def start(self, adaptation_sets: Dict[int, AdaptationSet]):
         self.adaptation_sets = adaptation_sets
@@ -232,5 +241,9 @@ class BETASchedulerImpl(BETAScheduler):
     async def drop_index(self, index):
         self._dropped_index = index
 
+    def get_selections(self):
+        super_list = [self.qual_list, self.selection_before_logic, self.selection_after_logic, self.slope_values]
+        
+        return super_list
     
     

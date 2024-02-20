@@ -1,7 +1,6 @@
 import datetime
 import io
 import json
-import logging
 import os
 from abc import ABC, abstractmethod
 from typing import List, Tuple, TextIO, Optional, Dict
@@ -59,8 +58,6 @@ class BETAPlaybackAnalyzer(
     DownloadEventListener,
     BandwidthUpdateListener,
 ):
-    log = logging.getLogger("BETAPlaybackAnalyzer")
-    log.info("Entered into BETAPlaybackAnalyzer")
     def __init__(self, config: BETAPlaybackAnalyzerConfig, mpd_provider: MPDProvider):
         self.config = config
         self._mpd_provider = mpd_provider
@@ -172,6 +169,12 @@ class BETAPlaybackAnalyzer(
         representation = adaptation_set.representations[representation_id]
         return representation
 
+    def process_super_list(self, super_list):
+        self.qual_list = super_list[0]
+        self.selection_before_logic = super_list[1]
+        self.selection_after_logic = super_list[2]
+        self.slope_values = super_list[3]
+        
     def save(self, output: io.TextIOBase) -> None:
         bitrates = []
 
@@ -192,6 +195,8 @@ class BETAPlaybackAnalyzer(
             "URL",
         )
         output.write("%-10s%-10s%-10s%-10s%-10s%-10s%-10s%-20s\n" % headers)
+        output.write("-" * 80 + "\n")
+        output.write("slopes : " + self.slope_values.__str__() + "\n")
         for index, segment in enumerate(self._segments):
             if last_quality is None:
                 # First segment

@@ -90,14 +90,15 @@ class BETASchedulerImpl(BETAScheduler):
         self.reduce_QL = (
             1  # Reduce quality level by this value if slope is less than threshold
         )
+        self.selected_values_list = []
 
-    def slope_estimator(self, qual_list, slope_threshold=-0.33, reduce_QL=1):
-        X = np.arange(len(qual_list))
-        slope, _, _, _, _ = stats.linregress(X, qual_list)
+    def slope_estimator(self, q_list, slope_threshold=-0.33, reduce_QL=1):
+        X = np.arange(len(q_list))
+        slope, _, _, _, _ = stats.linregress(X, q_list)
         if slope > slope_threshold:
-            return slope, reduce_QL
+            return slope, reduce_QL, q_list
         else:
-            return slope, 0
+            return slope, 0, q_list
 
     async def loop(self):
 
@@ -130,11 +131,11 @@ class BETASchedulerImpl(BETAScheduler):
             logic = True
             slope = "NA"
             red_value = 0
-
+            selected_values = "NA"
             # calculate slope
             if logic == True and len(self.qual_list) > self.num_previous_samples:
                 n = int(-1 * self.num_previous_samples)
-                slope, red_value = self.slope_estimator(
+                slope, red_value, selected_values = self.slope_estimator(
                     self.qual_list[n:], self.slope_threshold, self.reduce_QL
                 )
                 self.log.info(f"slope={slope}")
@@ -147,6 +148,7 @@ class BETASchedulerImpl(BETAScheduler):
             self.slope_values.append(slope)
             self.logic_values.append(red_value)
             self.qual_list.append(self._current_selections[0])
+            self.selected_values_list.append(selected_values)
 
             # self.log.info(f"Selections after logic ={self._current_selections}")
             self.selection_after_logic.append(self._current_selections)
@@ -243,6 +245,7 @@ class BETASchedulerImpl(BETAScheduler):
             self.selection_after_logic,
             self.slope_values,
             self.logic_values,
+            self.selected_values_list,
         ]
 
         default_list = [self.num_previous_samples, self.slope_threshold]

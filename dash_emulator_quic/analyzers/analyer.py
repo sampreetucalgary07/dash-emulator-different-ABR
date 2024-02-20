@@ -170,11 +170,12 @@ class BETAPlaybackAnalyzer(
         return representation
 
     def process_super_list(self, super_list, default_list):
-        self.qual_list = super_list[0]
-        self.selection_before_logic = super_list[1]
-        self.selection_after_logic = super_list[2]
-        self.slope_values = super_list[3]
-        self.logic_values = super_list[4]
+        self.qual_list = super_list[0][:-1]
+        self.selection_before_logic = super_list[1][:-1]
+        self.selection_after_logic = super_list[2][:-1]
+        self.slope_values = super_list[3][:-1]
+        self.logic_values = super_list[4][:-1]
+        self.selected_Values_list = super_list[5][:-1]
         self.num_previous_sample = default_list[0]
         self.slope_thre = default_list[1]
 
@@ -212,6 +213,12 @@ class BETAPlaybackAnalyzer(
             + "\n"
         )
         output.write("Length of the slope_threshold : " + str(self.slope_thre) + "\n")
+        output.write(
+            "Length of the selected_values_list : "
+            + str(len(self.selected_Values_list))
+            + "\n"
+        )
+        output.write("\nQList from logic function:\n" + self.qual_list.__str__() + "\n")
 
         output.write("%-10s%-10s%-10s%-10s%-10s%-10s%-10s%-20s\n" % headers)
 
@@ -289,6 +296,13 @@ class BETAPlaybackAnalyzer(
                 stall_info_list,
                 average_bitrate,
                 quality_switches,
+                self.selection_before_logic,
+                self.selection_after_logic,
+                self.slope_values,
+                self.logic_values,
+                self.selected_Values_list,
+                self.num_previous_sample,
+                self.slope_thre,
             )
 
     @staticmethod
@@ -300,18 +314,37 @@ class BETAPlaybackAnalyzer(
         stall_info_list,
         avg_bitrate,
         num_quality_switches,
+        selection_before_logic,
+        selection_after_logic,
+        slope_values,
+        logic_values,
+        selected_Values_list,
+        num_previous_sample,
+        slope_thre,
     ):
         data = {"segments": []}
-        for segment in segments:
+        for segment, svb, sal, slope_value, logic, selected_values in zip(
+            segments,
+            selection_before_logic,
+            selection_after_logic,
+            slope_values,
+            logic_values,
+            selected_Values_list,
+        ):
             data_obj = {
                 "index": segment.index,
-                "start": segment.start_time,
-                "end": segment.completion_time,
+                "start": segment.start_time,  # when the player starts downloading the segment
+                "end": segment.completion_time,  # when the player finishes downloading the segment
                 "quality": segment.quality_selection,  # quality requested by the player
-                "bitrate": segment.segment_bitrate,
+                "bitrate": segment.segment_bitrate,  # bitrate of the segment
                 "throughput": segment.bandwidth,
                 "ratio": segment.ratio,
                 "url": segment.url,
+                "selection_before_logic": svb,
+                "selection_after_logic": sal,
+                "slope_value": slope_value,
+                "logic_enabled": logic,
+                "values_for_slope": selected_values,
             }
             data["segments"].append(data_obj)
 
@@ -320,6 +353,8 @@ class BETAPlaybackAnalyzer(
         data["stall_info_list"] = stall_info_list
         data["avg_bitrate"] = avg_bitrate
         data["num_quality_switches"] = num_quality_switches
+        data["num_previous_sample"] = num_previous_sample
+        data["Slope_threshold"] = slope_thre
 
         extra_index = 1
         final_path = f"{path}-{extra_index}.json"

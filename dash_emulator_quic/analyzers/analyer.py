@@ -171,8 +171,8 @@ class BETAPlaybackAnalyzer(
 
     def process_super_list(self, super_list, default_list):
         self.qual_list = super_list[0]
-        self.selection_before_logic = super_list[1][:-1]
-        self.selection_after_logic = super_list[2][:-1]
+        self.selection_before_logic = super_list[1][:10]
+        self.selection_after_logic = super_list[2][:7]
         self.slope_values = super_list[3][:-1]
         self.logic_values = super_list[4][:-1]
         self.selected_Values_list = super_list[5][:-1]

@@ -284,6 +284,8 @@ class BETAPlaybackAnalyzer(
         # Number of quality switches
         output.write(f"Number of quality switches: {quality_switches}\n")
 
+        output.write("\n")
+
         if self.config.save_plots_dir is not None:
             self.save_plot()
 
@@ -321,9 +323,8 @@ class BETAPlaybackAnalyzer(
         selected_Values_list,
         num_previous_sample,
         slope_thre,
-        output: io.TextIOBase,
     ):
-        output.write("Dumping results to " + path + "\n")
+        print("Dumping results to " + path + "\n")
         data = {"segments": []}
         for segment, svb, sal, slope_value, logic, selected_values in zip(
             segments,

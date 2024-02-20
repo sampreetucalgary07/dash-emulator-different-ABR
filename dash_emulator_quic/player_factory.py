@@ -113,13 +113,11 @@ def build_dash_player_over_quic(
             [event_logger, analyzer],
         )
 
-        super_list_values, default_values = scheduler.data_updat()
-        # print("super_list_values in the player factory: ", super_list_values)
-        scheduler.print_statements()
-        analyzer.process_super_list(super_list_values, default_values)
+        # super_list_values, default_values = scheduler.data_updat()
+        # # print("super_list_values in the player factory: ", super_list_values)
+        # scheduler.print_statements()
+        # analyzer.process_super_list(super_list_values, default_values)
 
-        # print(type(abr_controller))
-        # print(abr_controller)
         return (
             DASHPlayer(
                 cfg.update_interval,

@@ -169,15 +169,15 @@ class BETAPlaybackAnalyzer(
         representation = adaptation_set.representations[representation_id]
         return representation
 
-    def process_super_list(self, super_list, default_list):
-        self.qual_list = super_list[0]
-        self.SBL_list = super_list[1]
-        self.SAL_list = super_list[2]
-        self.slope_values = super_list[3]
-        self.logic_values = super_list[4]
-        self.selected_Values_list = super_list[5]
-        self.num_previous_sample = default_list[0]
-        self.slope_thre = default_list[1]
+    # def process_super_list(self, super_list, default_list):
+    #     self.qual_list = super_list[0]
+    #     self.SBL_list = super_list[1]
+    #     self.SAL_list = super_list[2]
+    #     self.slope_values = super_list[3]
+    #     self.logic_values = super_list[4]
+    #     self.selected_Values_list = super_list[5]
+    #     self.num_previous_sample = default_list[0]
+    #     self.slope_thre = default_list[1]
 
     def save(self, output: io.TextIOBase) -> None:
         bitrates = []
@@ -198,25 +198,25 @@ class BETAPlaybackAnalyzer(
             "Ratio",
             "URL",
         )
-        output.write("Length of the qual : " + str(len(self.qual_list)) + "\n")
-        output.write("Length of the SBL list : " + str(len(self.SBL_list)) + "\n")
-        output.write("Length of the SAL list : " + str(len(self.SAL_list)) + "\n")
-        output.write("Length of the slope list : " + str(len(self.slope_values)) + "\n")
-        output.write("Length of the logic list : " + str(len(self.logic_values)) + "\n")
-        output.write(
-            "Length of the num_previous_samples : "
-            + str(self.num_previous_sample)
-            + "\n"
-        )
-        output.write("Length of the slope_threshold : " + str(self.slope_thre) + "\n")
-        output.write(
-            "Length of the selected_values_list : "
-            + str(len(self.selected_Values_list))
-            + "\n"
-        )
-        output.write("\nQList from logic function:\n" + self.qual_list.__str__() + "\n")
-        output.write("Selection before logic:\n" + self.SBL_list.__str__() + "\n")
-        output.write("Selection after logic:\n" + self.SAL_list.__str__() + "\n")
+        # output.write("Length of the qual : " + str(len(self.qual_list)) + "\n")
+        # output.write("Length of the SBL list : " + str(len(self.SBL_list)) + "\n")
+        # output.write("Length of the SAL list : " + str(len(self.SAL_list)) + "\n")
+        # output.write("Length of the slope list : " + str(len(self.slope_values)) + "\n")
+        # output.write("Length of the logic list : " + str(len(self.logic_values)) + "\n")
+        # output.write(
+        #     "Length of the num_previous_samples : "
+        #     + str(self.num_previous_sample)
+        #     + "\n"
+        # )
+        # output.write("Length of the slope_threshold : " + str(self.slope_thre) + "\n")
+        # output.write(
+        #     "Length of the selected_values_list : "
+        #     + str(len(self.selected_Values_list))
+        #     + "\n"
+        # )
+        # output.write("\nQList from logic function:\n" + self.qual_list.__str__() + "\n")
+        # output.write("Selection before logic:\n" + self.SBL_list.__str__() + "\n")
+        # output.write("Selection after logic:\n" + self.SAL_list.__str__() + "\n")
 
         output.write("%-10s%-10s%-10s%-10s%-10s%-10s%-10s%-20s\n" % headers)
 
@@ -314,24 +314,22 @@ class BETAPlaybackAnalyzer(
         stall_info_list,
         avg_bitrate,
         num_quality_switches,
-        SAL,
-        SBL,
-        slope_values,
-        logic_values,
-        selected_Values_list,
-        num_previous_sample,
-        slope_thre,
+        # SAL,
+        # SBL,
+        # slope_values,
+        # logic_values,
+        # selected_Values_list,
+        # num_previous_sample,
+        # slope_thre,
     ):
         print("Dumping results to " + path + "\n")
         data = {"segments": []}
-        for segment, svb, sal, slope_value, logic, selected_values in zip(
-            segments,
-            SAL,
-            SBL,
-            slope_values,
-            logic_values,
-            selected_Values_list,
-        ):
+        for segment in segments:
+            # SAL,
+            # SBL,
+            # slope_values,
+            # logic_values,
+            # selected_Values_list,
             data_obj = {
                 "index": segment.index,
                 "start": segment.start_time,  # when the player starts downloading the segment
@@ -341,11 +339,11 @@ class BETAPlaybackAnalyzer(
                 "throughput": segment.bandwidth,
                 "ratio": segment.ratio,
                 "url": segment.url,
-                "selection_before_logic": svb,
-                "selection_after_logic": sal,
-                "slope_value": slope_value,
-                "logic_enabled": logic,
-                "values_for_slope": selected_values,
+                # "selection_before_logic": svb,
+                # "selection_after_logic": sal,
+                # "slope_value": slope_value,
+                # "logic_enabled": logic,
+                # "values_for_slope": selected_values,
             }
             data["segments"].append(data_obj)
 
@@ -354,8 +352,8 @@ class BETAPlaybackAnalyzer(
         data["stall_info_list"] = stall_info_list
         data["avg_bitrate"] = avg_bitrate
         data["num_quality_switches"] = num_quality_switches
-        data["num_previous_sample"] = num_previous_sample
-        data["Slope_threshold"] = slope_thre
+        # data["num_previous_sample"] = num_previous_sample
+        # data["Slope_threshold"] = slope_thre
 
         extra_index = 1
         final_path = f"{path}-{extra_index}.json"

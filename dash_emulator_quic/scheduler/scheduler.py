@@ -1,4 +1,6 @@
 import asyncio
+import os
+import json
 import logging
 from abc import ABC, abstractmethod
 from asyncio import Task
@@ -78,11 +80,11 @@ class BETASchedulerImpl(BETAScheduler):
 
         self._end = False
         self._dropped_index = None
-        self.qual_list = []
-        self.selection_before_logic = []
-        self.selection_after_logic = []
-        self.slope_values = []
-        self.logic_values = []
+        # self.qual_list = []
+        # self.selection_before_logic = []
+        # self.selection_after_logic = []
+        # self.slope_values = []
+        # self.logic_values = []
         self.num_previous_samples = (
             3  # No. of previous samples to consider for slope calculation
         )
@@ -90,7 +92,7 @@ class BETASchedulerImpl(BETAScheduler):
         self.reduce_QL = (
             1  # Reduce quality level by this value if slope is less than threshold
         )
-        self.selected_values_list = []
+        # self.selected_values_list = []
 
     def slope_estimator(self, q_list, slope_threshold=-0.33, reduce_QL=1):
         X = np.arange(len(q_list))
@@ -99,6 +101,18 @@ class BETASchedulerImpl(BETAScheduler):
             return slope, reduce_QL, q_list
         else:
             return slope, 0, q_list
+
+    def check_json_exists(self):
+        if not os.path.exists("super_list.json"):
+            with open("super_list.json", "w") as f:
+                f.write("[]")
+        else:
+            with open("super_list.json", "w") as f:
+                json.dump({}, f)
+
+    def data_update(self, d_values):
+        with open("super_list.json", "r") as f:
+            json.dump(d_values, f, indent=4)
 
     async def loop(self):
 
@@ -124,8 +138,9 @@ class BETASchedulerImpl(BETAScheduler):
 
             self._current_selections = selections
             # self.log.info(f"Celections before logic ={self._current_selections}")
-            self.selection_before_logic.append(self._current_selections[0])
+            # self.selection_before_logic.append(self._current_selections[0])
             print("Selections before logic : ", self._current_selections[0])
+            SBL_value = self._current_selections[0]
 
             # Select if you want to implement logic
             logic = True
@@ -145,19 +160,33 @@ class BETASchedulerImpl(BETAScheduler):
                 if self._current_selections[0] > 6:
                     self._current_selections[0] = 6
 
-            self.slope_values.append(slope)
-            self.logic_values.append(red_value)
-            self.qual_list.append(self._current_selections[0])
-            self.selected_values_list.append(selected_values)
+            # self.slope_values.append(slope)
+            # self.logic_values.append(red_value)
+            # self.qual_list.append(self._current_selections[0])
+            # self.selected_values_list.append(selected_values)
 
             # self.log.info(f"Selections after logic ={self._current_selections}")
-            self.selection_after_logic.append(self._current_selections[0])
+            # self.selection_after_logic.append(self._current_selections[0])
             print("Selections after logic : ", self._current_selections[0])
+            SAL_value = self._current_selections[0]
+
+            data_values = {
+                "index": self._index,
+                "SBL": SBL_value,
+                "SAL": SAL_value,
+                "slope": slope,
+                "logic": red_value,
+                "selected_values": selected_values,
+                "num_previous_samples": self.num_previous_samples,
+                "slope_threshold": self.slope_threshold,
+                "reduce_QL": self.reduce_QL,
+            }
+
+            self.data_update(data_values)
 
             for listener in self.listeners:
                 await listener.on_segment_download_start(self._index, selections)
             duration = 0
-            ##print("Selection (listener event start) : ", selection)
             urls = []
             for adaptation_set_id, selection in selections.items():
                 adaptation_set = self.adaptation_sets[adaptation_set_id]
@@ -191,15 +220,6 @@ class BETASchedulerImpl(BETAScheduler):
                 await listener.on_segment_download_complete(self._index)
             self._index += 1
             self.buffer_manager.enqueue_buffer(duration)
-
-            print(
-                "Selection before logic at the end: ",
-                self.selection_before_logic,
-            )
-            print(
-                "Selection after logic at the end: ",
-                self.selection_after_logic,
-            )
 
     def start(self, adaptation_sets: Dict[int, AdaptationSet]):
         self.adaptation_sets = adaptation_sets
@@ -247,31 +267,31 @@ class BETASchedulerImpl(BETAScheduler):
     async def drop_index(self, index):
         self._dropped_index = index
 
-    def print_statements(self):
-        print(
-            "Selection before logic  in the print function: ",
-            self.selection_before_logic,
-        )
-        print(
-            "Selection after logic  in the get print function: ",
-            self.selection_after_logic,
-        )
+    # def print_statements(self):
+    #     print(
+    #         "Selection before logic  in the print function: ",
+    #         self.selection_before_logic,
+    #     )
+    #     print(
+    #         "Selection after logic  in the get print function: ",
+    #         self.selection_after_logic,
+    #     )
 
-    def get_selections(self):
-        super_list = [
-            self.qual_list,
-            self.selection_before_logic,
-            self.selection_after_logic,
-            self.slope_values,
-            self.logic_values,
-            self.selected_values_list,
-        ]
-        print("Selection before logic  in the get selection function: ", super_list[1])
-        print("Selection after logic  in the get selection function: ", super_list[2])
-        print("Slope values  in the get selection function: ", super_list[3])
-        print("Logic values  in the get selection function: ", super_list[4])
-        print("Selected values list  in the get selection function: ", super_list[5])
+    # def get_selections(self):
+    #     super_list = [
+    #         self.qual_list,
+    #         self.selection_before_logic,
+    #         self.selection_after_logic,
+    #         self.slope_values,
+    #         self.logic_values,
+    #         self.selected_values_list,
+    #     ]
+    #     print("Selection before logic  in the get selection function: ", super_list[1])
+    #     print("Selection after logic  in the get selection function: ", super_list[2])
+    #     print("Slope values  in the get selection function: ", super_list[3])
+    #     print("Logic values  in the get selection function: ", super_list[4])
+    #     print("Selected values list  in the get selection function: ", super_list[5])
 
-        default_list = [self.num_previous_samples, self.slope_threshold]
+    #     default_list = [self.num_previous_samples, self.slope_threshold]
 
-        return super_list, default_list
+    #     return super_list, default_list

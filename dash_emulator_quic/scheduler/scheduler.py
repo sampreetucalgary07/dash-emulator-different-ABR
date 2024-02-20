@@ -80,7 +80,7 @@ class BETASchedulerImpl(BETAScheduler):
 
         self._end = False
         self._dropped_index = None
-        self.qual_list = []
+
         self.num_previous_samples = (
             3  # No. of previous samples to consider for slope calculation
         )
@@ -99,7 +99,7 @@ class BETASchedulerImpl(BETAScheduler):
             return slope, 0, q_list
 
     async def loop(self):
-
+        self.qual_list = []
         self.log.info("BETA: Start scheduler loop from dash_emulator_quic")
         while True:
             # Check buffer level

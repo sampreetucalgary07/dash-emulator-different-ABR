@@ -126,7 +126,7 @@ class BETASchedulerImpl(BETAScheduler):
             self.log.info(f"Selections before logic ={self._current_selections}")
             # self.selection_before_logic.append(self._current_selections[0])
             print("Selections before logic : ", self._current_selections[0])
-            SBL = self._current_selections[0]
+            SBL = self._current_selections
 
             # Select if you want to implement logic
             logic = True
@@ -147,7 +147,7 @@ class BETASchedulerImpl(BETAScheduler):
                     self._current_selections[0] = 6
 
             print("Selections after logic : ", self._current_selections[0])
-            SAL = self._current_selections[0]
+            SAL = self._current_selections
             print("Selected values : ", selected_values)
             self.qual_list.append(self._current_selections[0])
 

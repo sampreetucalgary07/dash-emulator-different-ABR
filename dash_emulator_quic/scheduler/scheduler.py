@@ -161,10 +161,10 @@ class BETASchedulerImpl(BETAScheduler):
             # current_data[self._index]["logic"] = logic
             # current_data[self._index]["slope"] = slope
             # current_data[self._index]["red_value"] = red_value
-            # self.qual_list.append(selections)
-            # print("Qual_list : ", self.qual_list)
-            # with open("values_list.json", "w") as f:
-            #     json.dump(self.qual_list, f)
+            self.qual_list.append(self._current_selections[0])
+            print("Qual_list : ", self.qual_list)
+            with open("values_list.json", "w") as f:
+                json.dump(selections, f)
 
             # with open("values_list.txt", "w") as f:
             #     f.write(str(self.qual_list))

@@ -100,9 +100,9 @@ class BETASchedulerImpl(BETAScheduler):
 
     async def loop(self):
         self.qual_list = []
-        curr_dir = os.getcwd()
-        with open(curr_dir + "/values_list.json", "w") as f:
-            json.dump({}, f)
+        # curr_dir = os.getcwd()
+        # with open(curr_dir + "/values_list.json", "w") as f:
+        #     json.dump({}, f)
 
         self.log.info("BETA: Start scheduler loop from dash_emulator_quic")
         while True:
@@ -123,18 +123,18 @@ class BETASchedulerImpl(BETAScheduler):
             else:
                 selections = self.abr_controller.update_selection(self.adaptation_sets)
 
-            with open(curr_dir + "/values_list.json", "r") as f:
-                current_data = json.load(f)
+            # with open(curr_dir + "/values_list.json", "r") as f:
+            #     current_data = json.load(f)
 
             print("index : ", self._index)
-            current_data[self._index] = {}
+            # current_data[self._index] = {}
             # current_data[self._index] = data_values
             self._current_selections = selections
             self.log.info(f"Selections before logic ={self._current_selections}")
             # self.selection_before_logic.append(self._current_selections[0])
             print("Selections_before_logic : ", self._current_selections[0])
             # SBL = self._current_selections
-            current_data[self._index]["SBL"] = self._current_selections
+            # current_data[self._index]["SBL"] = self._current_selections
 
             # Select if you want to implement logic
             logic = True
@@ -155,18 +155,18 @@ class BETASchedulerImpl(BETAScheduler):
                     self._current_selections[0] = 6
 
             print("Selections_after_logic : ", self._current_selections[0])
-            current_data[self._index]["SAL"] = self._current_selections
+            # current_data[self._index]["SAL"] = self._current_selections
             # SAL = self._current_selections
             print("Selected_values : ", selected_values)
-            current_data[self._index]["selected_values"] = selected_values
-            current_data[self._index]["logic"] = logic
-            current_data[self._index]["slope"] = slope
-            current_data[self._index]["red_value"] = red_value
+            # current_data[self._index]["selected_values"] = selected_values
+            # current_data[self._index]["logic"] = logic
+            # current_data[self._index]["slope"] = slope
+            # current_data[self._index]["red_value"] = red_value
             self.qual_list.append(self._current_selections[0])
 
             # close the file
-            with open(curr_dir + "/values_list.json", "w") as f:
-                f.write(json.dumps(current_data))
+            # with open(curr_dir + "/values_list.json", "w") as f:
+            #     f.write(json.dumps(current_data))
             # open a .json file in the current directory and write the list to it
             # print(curr_dir)
 

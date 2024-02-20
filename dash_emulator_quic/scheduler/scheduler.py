@@ -124,7 +124,7 @@ class BETASchedulerImpl(BETAScheduler):
 
             self._current_selections = selections
             # self.log.info(f"Celections before logic ={self._current_selections}")
-            self.selection_before_logic.append(self._current_selections)
+            self.selection_before_logic.append(self._current_selections[0])
             print("Selections before logic : ", self._current_selections[0])
 
             # Select if you want to implement logic
@@ -151,7 +151,7 @@ class BETASchedulerImpl(BETAScheduler):
             self.selected_values_list.append(selected_values)
 
             # self.log.info(f"Selections after logic ={self._current_selections}")
-            self.selection_after_logic.append(self._current_selections)
+            self.selection_after_logic.append(self._current_selections[0])
             print("Selections after logic : ", self._current_selections[0])
 
             for listener in self.listeners:
@@ -268,6 +268,9 @@ class BETASchedulerImpl(BETAScheduler):
         ]
         print("Selection before logic  in the get selection function: ", super_list[1])
         print("Selection after logic  in the get selection function: ", super_list[2])
+        print("Slope values  in the get selection function: ", super_list[3])
+        print("Logic values  in the get selection function: ", super_list[4])
+        print("Selected values list  in the get selection function: ", super_list[5])
 
         default_list = [self.num_previous_samples, self.slope_threshold]
 

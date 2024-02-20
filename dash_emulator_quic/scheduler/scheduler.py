@@ -102,23 +102,12 @@ class BETASchedulerImpl(BETAScheduler):
         else:
             return slope, 0, q_list
 
-    def check_json_exists(self):
-        if not os.path.exists("super_list.json"):
-            with open("super_list.json", "w") as f:
-                f.write("[]")
-        else:
-            with open("super_list.json", "w") as f:
-                json.dump({}, f)
-
-    def data_update(self, d_values):
-        with open("super_list.json", "a") as f:
-            json.dump(d_values, f, indent=4)
-            f.write("\n")
-
     async def loop(self):
 
         # self.log.info("Slope is 1.0")
-        self.check_json_exists()
+        with open("super_list.json", "w") as f:
+            json.dump({}, f)
+        self.log.info("Empty super_list.json file created")
         self.log.info("BETA: Start scheduler loop from dash_emulator_quic")
         while True:
             # Check buffer level
@@ -167,7 +156,7 @@ class BETASchedulerImpl(BETAScheduler):
             # self.qual_list.append(self._current_selections[0])
             # self.selected_values_list.append(selected_values)
 
-            # self.log.info(f"Selections after logic ={self._current_selections}")
+            self.log.info(f"Selections after logic ={self._current_selections}")
             # self.selection_after_logic.append(self._current_selections[0])
             print("Selections after logic : ", self._current_selections[0])
             SAL_value = self._current_selections[0]
@@ -184,7 +173,10 @@ class BETASchedulerImpl(BETAScheduler):
                 "reduce_QL": self.reduce_QL,
             }
 
-            self.data_update(data_values)
+            self.log.info(f"Data values: {data_values}")
+
+            with open("super_list.json", "w") as f:
+                json.dump(data_values, f, indent=4)
 
             for listener in self.listeners:
                 await listener.on_segment_download_start(self._index, selections)

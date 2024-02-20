@@ -119,7 +119,7 @@ class BETASchedulerImpl(BETAScheduler):
                 selections = self.abr_controller.update_selection(self.adaptation_sets)
 
             self._current_selections = selections
-            # self.log.info(f"Selections before logic ={self._current_selections}")
+            self.log.info(f"Selections before logic ={self._current_selections}")
             # self.selection_before_logic.append(self._current_selections[0])
             print("Selections before logic : ", self._current_selections[0])
 
@@ -142,7 +142,7 @@ class BETASchedulerImpl(BETAScheduler):
                     self._current_selections[0] = 6
 
             print("Selections after logic : ", self._current_selections[0])
-
+            print("Selected values : ", selected_values)
             for listener in self.listeners:
                 await listener.on_segment_download_start(self._index, selections)
             duration = 0

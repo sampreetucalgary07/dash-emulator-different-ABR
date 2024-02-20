@@ -125,7 +125,7 @@ class BETASchedulerImpl(BETAScheduler):
             self._current_selections = selections
             # self.log.info(f"Celections before logic ={self._current_selections}")
             self.selection_before_logic.append(self._current_selections)
-            print("Selections before logic : ", self._current_selections)
+            print("Selections before logic : ", self._current_selections[0])
 
             # Select if you want to implement logic
             logic = True
@@ -152,7 +152,7 @@ class BETASchedulerImpl(BETAScheduler):
 
             # self.log.info(f"Selections after logic ={self._current_selections}")
             self.selection_after_logic.append(self._current_selections)
-            print("Selections after logic : ", self._current_selections)
+            print("Selections after logic : ", self._current_selections[0])
 
             for listener in self.listeners:
                 await listener.on_segment_download_start(self._index, selections)
@@ -191,6 +191,15 @@ class BETASchedulerImpl(BETAScheduler):
                 await listener.on_segment_download_complete(self._index)
             self._index += 1
             self.buffer_manager.enqueue_buffer(duration)
+
+            print(
+                "Selection before logic at the end: ",
+                self.selection_before_logic,
+            )
+            print(
+                "Selection after logic at the end: ",
+                self.selection_after_logic,
+            )
 
     def start(self, adaptation_sets: Dict[int, AdaptationSet]):
         self.adaptation_sets = adaptation_sets
@@ -240,11 +249,11 @@ class BETASchedulerImpl(BETAScheduler):
 
     def print_statements(self):
         print(
-            "Selection before logic  in the get selection function: ",
+            "Selection before logic  in the print function: ",
             self.selection_before_logic,
         )
         print(
-            "Selection after logic  in the get selection function: ",
+            "Selection after logic  in the get print function: ",
             self.selection_after_logic,
         )
 
@@ -257,6 +266,8 @@ class BETASchedulerImpl(BETAScheduler):
             self.logic_values,
             self.selected_values_list,
         ]
+        print("Selection before logic  in the get selection function: ", super_list[1])
+        print("Selection after logic  in the get selection function: ", super_list[2])
 
         default_list = [self.num_previous_samples, self.slope_threshold]
 

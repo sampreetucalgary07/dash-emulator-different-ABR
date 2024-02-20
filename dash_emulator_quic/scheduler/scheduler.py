@@ -100,6 +100,8 @@ class BETASchedulerImpl(BETAScheduler):
 
     async def loop(self):
         self.qual_list = []
+        with open(curr_dir + "/values_list.json", "w") as f:
+            json.dump({}, f)
         self.log.info("BETA: Start scheduler loop from dash_emulator_quic")
         while True:
             # Check buffer level
@@ -123,6 +125,7 @@ class BETASchedulerImpl(BETAScheduler):
             self.log.info(f"Selections before logic ={self._current_selections}")
             # self.selection_before_logic.append(self._current_selections[0])
             print("Selections before logic : ", self._current_selections[0])
+            SBL = self._current_selections[0]
 
             # Select if you want to implement logic
             logic = True
@@ -143,14 +146,30 @@ class BETASchedulerImpl(BETAScheduler):
                     self._current_selections[0] = 6
 
             print("Selections after logic : ", self._current_selections[0])
+            SAL = self._current_selections[0]
             print("Selected values : ", selected_values)
             self.qual_list.append(self._current_selections[0])
 
             # open a .json file in the current directory and write the list to it
             curr_dir = os.getcwd()
             print(curr_dir)
-            with open(curr_dir + "/qual_list.json", "w") as f:
-                json.dump(self.qual_list, f)
+
+            data_values = {
+                "SBL": SBL,
+                "SAL": SAL,
+                "logic": logic,
+                "slope": slope,
+                "red_value": red_value,
+                "selected_values": selected_values,
+            }
+
+            with open(curr_dir + "/values_list.json", "r") as f:
+                current_data = json.load(f)
+
+            current_data[self._index] = data_values
+
+            with open(curr_dir + "/values_list.json", "w") as f:
+                json.dump(current_data, f)
 
             for listener in self.listeners:
                 await listener.on_segment_download_start(self._index, selections)

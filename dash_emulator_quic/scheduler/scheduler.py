@@ -154,15 +154,6 @@ class BETASchedulerImpl(BETAScheduler):
             self.selection_after_logic.append(self._current_selections[0])
             print("Selections after logic : ", self._current_selections[0])
 
-            self.data_update(
-                self.qual_list,
-                self.selection_before_logic,
-                self.selection_after_logic,
-                self.slope_values,
-                self.logic_values,
-                self.selected_values_list,
-            )
-
             for listener in self.listeners:
                 await listener.on_segment_download_start(self._index, selections)
             duration = 0
@@ -266,41 +257,21 @@ class BETASchedulerImpl(BETAScheduler):
             self.selection_after_logic,
         )
 
-    # def get_selections(self):
-    #     super_list = [
-    #         self.qual_list,
-    #         self.selection_before_logic,
-    #         self.selection_after_logic,
-    #         self.slope_values,
-    #         self.logic_values,
-    #         self.selected_values_list,
-    #     ]
-    #     print("Selection before logic  in the get selection function: ", super_list[1])
-    #     print("Selection after logic  in the get selection function: ", super_list[2])
-    #     print("Slope values  in the get selection function: ", super_list[3])
-    #     print("Logic values  in the get selection function: ", super_list[4])
-    #     print("Selected values list  in the get selection function: ", super_list[5])
-
-    #     default_list = [self.num_previous_samples, self.slope_threshold]
-
-    #     return super_list, default_list
-
-    def data_update(
-        self, qual_list, SBL, SAL, slope_values, logic_values, selected_values_list
-    ):
+    def get_selections(self):
         super_list = [
-            qual_list,
-            SBL,
-            SAL,
-            slope_values,
-            logic_values,
-            selected_values_list,
+            self.qual_list,
+            self.selection_before_logic,
+            self.selection_after_logic,
+            self.slope_values,
+            self.logic_values,
+            self.selected_values_list,
         ]
-
-        default_list = [self.num_previous_samples, self.slope_threshold]
         print("Selection before logic  in the get selection function: ", super_list[1])
         print("Selection after logic  in the get selection function: ", super_list[2])
         print("Slope values  in the get selection function: ", super_list[3])
         print("Logic values  in the get selection function: ", super_list[4])
+        print("Selected values list  in the get selection function: ", super_list[5])
+
+        default_list = [self.num_previous_samples, self.slope_threshold]
 
         return super_list, default_list

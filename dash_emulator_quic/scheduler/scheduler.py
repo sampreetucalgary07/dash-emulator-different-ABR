@@ -102,6 +102,7 @@ class BETASchedulerImpl(BETAScheduler):
         self.qual_list = []
         self.SBL_list = []
         self.SAL_list = []
+        curr_dir = os.getcwd()
         # curr_dir = os.getcwd()
         # with open(
         #     "/Users/thispc/Gitlab/iStream/iStream/Results/VanilaResults/", "w"
@@ -135,6 +136,7 @@ class BETASchedulerImpl(BETAScheduler):
             #     current_data = json.dump({}, f)
 
             print("index : ", self._index)
+
             # current_data[self._index] = {}
             # current_data[self._index] =
             self._current_selections = selections
@@ -142,7 +144,7 @@ class BETASchedulerImpl(BETAScheduler):
             # self.selection_before_logic.append(self._current_selections[0])
             print("Selections_before_logic : ", self._current_selections[0])
             self.SBL_list.append(self._current_selections[0])
-            with open(os.getcwd + "/SBL_list.json", "w") as f:
+            with open(curr_dir + "/SBL_list.json", "w") as f:
                 json.dump(self.SBL_list, f)
             # SBL = self._current_selections
             # current_data[self._index]["SBL"] = self._current_selections
@@ -167,7 +169,7 @@ class BETASchedulerImpl(BETAScheduler):
 
             print("Selections_after_logic : ", self._current_selections[0])
             self.SAL_list.append(self._current_selections[0])
-            with open(os.getcwd + "/SAL_list.json", "w") as f:
+            with open(curr_dir + "/SAL_list.json", "w") as f:
                 json.dump(self.SAL_list, f)
             # current_data[self._index]["SAL"] = self._current_selections
             # SAL = self._current_selections
@@ -179,7 +181,7 @@ class BETASchedulerImpl(BETAScheduler):
             self.qual_list.append(self._current_selections[0])
 
             # close the file
-            with open(os.getcwd + "/qual_list.json", "w") as f:
+            with open(curr_dir + "/qual_list.json", "w") as f:
                 json.dump(self.qual_list, f)
             # open a .json file in the current directory and write the list to it
             # print(curr_dir)

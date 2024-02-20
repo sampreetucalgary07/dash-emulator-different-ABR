@@ -80,6 +80,7 @@ class BETASchedulerImpl(BETAScheduler):
 
         self._end = False
         self._dropped_index = None
+        self.qual_list = []
         self.num_previous_samples = (
             3  # No. of previous samples to consider for slope calculation
         )
@@ -143,6 +144,7 @@ class BETASchedulerImpl(BETAScheduler):
 
             print("Selections after logic : ", self._current_selections[0])
             print("Selected values : ", selected_values)
+            self.qual_list.append(self._current_selections[0])
             for listener in self.listeners:
                 await listener.on_segment_download_start(self._index, selections)
             duration = 0

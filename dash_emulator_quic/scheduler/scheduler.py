@@ -80,11 +80,6 @@ class BETASchedulerImpl(BETAScheduler):
 
         self._end = False
         self._dropped_index = None
-        # self.qual_list = []
-        # self.selection_before_logic = []
-        # self.selection_after_logic = []
-        # self.slope_values = []
-        # self.logic_values = []
         self.num_previous_samples = (
             3  # No. of previous samples to consider for slope calculation
         )
@@ -104,10 +99,6 @@ class BETASchedulerImpl(BETAScheduler):
 
     async def loop(self):
 
-        # self.log.info("Slope is 1.0")
-        with open("super_list.json", "w") as f:
-            json.dump({}, f)
-        self.log.info("Empty super_list.json file created")
         self.log.info("BETA: Start scheduler loop from dash_emulator_quic")
         while True:
             # Check buffer level
@@ -128,10 +119,9 @@ class BETASchedulerImpl(BETAScheduler):
                 selections = self.abr_controller.update_selection(self.adaptation_sets)
 
             self._current_selections = selections
-            self.log.info(f"Selections before logic ={self._current_selections}")
+            # self.log.info(f"Selections before logic ={self._current_selections}")
             # self.selection_before_logic.append(self._current_selections[0])
             print("Selections before logic : ", self._current_selections[0])
-            SBL_value = self._current_selections[0]
 
             # Select if you want to implement logic
             logic = True
@@ -151,32 +141,7 @@ class BETASchedulerImpl(BETAScheduler):
                 if self._current_selections[0] > 6:
                     self._current_selections[0] = 6
 
-            # self.slope_values.append(slope)
-            # self.logic_values.append(red_value)
-            # self.qual_list.append(self._current_selections[0])
-            # self.selected_values_list.append(selected_values)
-
-            self.log.info(f"Selections after logic ={self._current_selections}")
-            # self.selection_after_logic.append(self._current_selections[0])
             print("Selections after logic : ", self._current_selections[0])
-            SAL_value = self._current_selections[0]
-
-            data_values = {
-                "index": self._index,
-                "SBL": SBL_value,
-                "SAL": SAL_value,
-                "slope": slope,
-                "logic": red_value,
-                "selected_values": selected_values,
-                "num_previous_samples": self.num_previous_samples,
-                "slope_threshold": self.slope_threshold,
-                "reduce_QL": self.reduce_QL,
-            }
-
-            self.log.info(f"Data values: {data_values}")
-
-            with open("super_list.json", "w") as f:
-                json.dump(data_values, f, indent=4)
 
             for listener in self.listeners:
                 await listener.on_segment_download_start(self._index, selections)
@@ -260,32 +225,3 @@ class BETASchedulerImpl(BETAScheduler):
 
     async def drop_index(self, index):
         self._dropped_index = index
-
-    # def print_statements(self):
-    #     print(
-    #         "Selection before logic  in the print function: ",
-    #         self.selection_before_logic,
-    #     )
-    #     print(
-    #         "Selection after logic  in the get print function: ",
-    #         self.selection_after_logic,
-    #     )
-
-    # def get_selections(self):
-    #     super_list = [
-    #         self.qual_list,
-    #         self.selection_before_logic,
-    #         self.selection_after_logic,
-    #         self.slope_values,
-    #         self.logic_values,
-    #         self.selected_values_list,
-    #     ]
-    #     print("Selection before logic  in the get selection function: ", super_list[1])
-    #     print("Selection after logic  in the get selection function: ", super_list[2])
-    #     print("Slope values  in the get selection function: ", super_list[3])
-    #     print("Logic values  in the get selection function: ", super_list[4])
-    #     print("Selected values list  in the get selection function: ", super_list[5])
-
-    #     default_list = [self.num_previous_samples, self.slope_threshold]
-
-    #     return super_list, default_list

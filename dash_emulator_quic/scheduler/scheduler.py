@@ -161,6 +161,7 @@ class BETASchedulerImpl(BETAScheduler):
             # current_data[self._index]["slope"] = slope
             # current_data[self._index]["red_value"] = red_value
             self.qual_list.append(selections)
+            print("Qual_list : ", self.qual_list)
             with open("values_list.json", "w") as f:
                 json.dump(self.qual_list, f)
 

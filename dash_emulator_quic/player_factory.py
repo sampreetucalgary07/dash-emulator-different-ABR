@@ -113,8 +113,8 @@ def build_dash_player_over_quic(
             [event_logger, analyzer],
         )
         
-        super_list_values = scheduler.get_selections()
-        analyzer.process_super_list(super_list_values)
+        super_list_values, default_values = scheduler.get_selections()
+        analyzer.process_super_list(super_list_values, default_values)
         
         # print(type(abr_controller))
         # print(abr_controller)

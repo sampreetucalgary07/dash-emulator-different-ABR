@@ -82,6 +82,7 @@ class BETASchedulerImpl(BETAScheduler):
         self.selection_before_logic = []
         self.selection_after_logic = []
         self.slope_values = []
+        self.logic_values = []
 
     def slope_estimator(self, qual_list, slope_threshold=-0.33, reduce_QL=1):
         X = np.arange(len(qual_list))
@@ -124,35 +125,39 @@ class BETASchedulerImpl(BETAScheduler):
                 selections = self.abr_controller.update_selection(self.adaptation_sets)
 
             self._current_selections = selections
-            self.log.info(f"selections before logic ={self._current_selections}")
+            #self.log.info(f"Celections before logic ={self._current_selections}")
             self.selection_before_logic.append(self._current_selections)
-            print("selections before logic : ", self._current_selections)
+            print("Selections before logic : ", self._current_selections)
 
             # Select if you want to implement logic
             logic = True
-
-            num_previous_samples = 3
+            slope = "NA"
+            red_value = 0
+            self.num_previous_samples = 3
+            self.slope_threshold=0.33
+            
             # calculate slope
-            if logic == True and len(self.qual_list) > num_previous_samples:
-                n = int(-1 * num_previous_samples)
+            if logic == True and len(self.qual_list) > self.num_previous_samples:
+                n = int(-1 * self.num_previous_samples)
                 slope, red_value = self.slope_estimator(
-                    self.qual_list[n:], slope_threshold=0.33, reduce_QL=1
+                    self.qual_list[n:], self.slope_threshold, reduce_QL=1
                 )
                 self.log.info(f"slope={slope}")
-                self.slope_values.append(slope)
                 print("slope : ", slope)
                 
                 self._current_selections[0] = self._current_selections[0] + red_value
                 if self._current_selections[0] > 6:
                     self._current_selections[0] = 6
-
+                    
+            self.slope_values.append(slope)  
+            self.logic_values.append(red_value)
             self.qual_list.append(self._current_selections[0])
-            self.log.info(f"qual_list={self.qual_list}")
+            #self.log.info(f"qual_list={self.qual_list}")
             #print("qual_list : ", self.qual_list)
 
-            self.log.info(f"selections after logic ={self._current_selections}")
+            #self.log.info(f"Selections after logic ={self._current_selections}")
             self.selection_after_logic.append(self._current_selections)
-            print("selections after logic : ", self._current_selections)
+            print("Selections after logic : ", self._current_selections)
 
             for listener in self.listeners:
                 await listener.on_segment_download_start(self._index, selections)
@@ -242,8 +247,11 @@ class BETASchedulerImpl(BETAScheduler):
         self._dropped_index = index
 
     def get_selections(self):
-        super_list = [self.qual_list, self.selection_before_logic, self.selection_after_logic, self.slope_values]
+        super_list = [self.qual_list, self.selection_before_logic, 
+                      self.selection_after_logic, self.slope_values, self.logic_values]
         
-        return super_list
+        default_list = [self.num_previous_samples, self.slope_threshold]
+        
+        return super_list, default_list
     
     

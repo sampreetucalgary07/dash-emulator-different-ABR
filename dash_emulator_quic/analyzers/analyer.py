@@ -169,11 +169,15 @@ class BETAPlaybackAnalyzer(
         representation = adaptation_set.representations[representation_id]
         return representation
 
-    def process_super_list(self, super_list):
+    def process_super_list(self, super_list, defuault_list):
         self.qual_list = super_list[0]
         self.selection_before_logic = super_list[1]
         self.selection_after_logic = super_list[2]
         self.slope_values = super_list[3]
+        self.logic_values = super_list[4]
+        self.num_previous_samples = defuault_list[0]
+        self.slope_threshold = defuault_list[1]
+        
         
     def save(self, output: io.TextIOBase) -> None:
         bitrates = []
@@ -194,9 +198,16 @@ class BETAPlaybackAnalyzer(
             "Ratio",
             "URL",
         )
+        output.write("Length of the qual : " + str(len(self.qual_list)) + "\n")
+        output.write("Length of the SBL list : " + str(len(self.selection_before_logic)) + "\n")
+        output.write("Length of the SAL list : " + str(len(self.selection_after_logic)) + "\n")
+        output.write("Length of the slope list : " + str(len(self.slope_values)) + "\n")
+        output.write("Length of the logic list : " + str(len(self.logic_values)) + "\n")
+        output.write("Length of the num_previous_samples : " + str(self.num_previous_samples) + "\n")
+        output.write("Length of the slope_threshold : " + str(self.slope_threshold) + "\n")
+        
         output.write("%-10s%-10s%-10s%-10s%-10s%-10s%-10s%-20s\n" % headers)
-        output.write("-" * 80 + "\n")
-        output.write("slopes : " + self.slope_values.__str__() + "\n")
+        
         for index, segment in enumerate(self._segments):
             if last_quality is None:
                 # First segment

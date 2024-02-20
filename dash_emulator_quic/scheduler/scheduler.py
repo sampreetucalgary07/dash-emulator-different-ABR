@@ -111,12 +111,14 @@ class BETASchedulerImpl(BETAScheduler):
                 json.dump({}, f)
 
     def data_update(self, d_values):
-        with open("super_list.json", "r") as f:
+        with open("super_list.json", "a") as f:
             json.dump(d_values, f, indent=4)
+            f.write("\n")
 
     async def loop(self):
 
         # self.log.info("Slope is 1.0")
+        self.check_json_exists()
         self.log.info("BETA: Start scheduler loop from dash_emulator_quic")
         while True:
             # Check buffer level
@@ -137,7 +139,7 @@ class BETASchedulerImpl(BETAScheduler):
                 selections = self.abr_controller.update_selection(self.adaptation_sets)
 
             self._current_selections = selections
-            # self.log.info(f"Celections before logic ={self._current_selections}")
+            self.log.info(f"Selections before logic ={self._current_selections}")
             # self.selection_before_logic.append(self._current_selections[0])
             print("Selections before logic : ", self._current_selections[0])
             SBL_value = self._current_selections[0]

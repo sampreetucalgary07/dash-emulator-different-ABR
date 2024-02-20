@@ -145,8 +145,10 @@ class BETASchedulerImpl(BETAScheduler):
             print("Selections after logic : ", self._current_selections[0])
             print("Selected values : ", selected_values)
             self.qual_list.append(self._current_selections[0])
+            # print current directory
+            print(os.getcwd())
 
-            with open("qual_list.json", "w") as f:
+            with open("./qual_list.json", "w") as f:
                 json.dump(self.qual_list, f)
 
             for listener in self.listeners:

@@ -91,7 +91,7 @@ def build_dash_player_over_quic(
             download_manager = QuicClientImpl(
                 [bandwidth_meter, analyzer], event_parser=h3_event_parser
             )
-        else:
+        else:  # this is the case
             download_manager = TCPClientImpl([bandwidth_meter, analyzer])
         abr_controller = BetaABRController(
             DashABRController(

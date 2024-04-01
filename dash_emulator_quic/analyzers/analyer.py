@@ -72,11 +72,11 @@ class BETAPlaybackAnalyzer(
 
         # index, start time, completion time, quality, bandwidth
         self._current_segment: Optional[AnalyzerSegment] = None
-        self._SBL_list: List[int] = []
-        self._SAL_list: List[int] = []
-        self._slope_list: List[float] = []
-        self._selected_qls_list: List[int] = []
-        self._thre_value_list: List[float] = []
+        self._SBL_list = []
+        self._SAL_list = []
+        self._slope_list = []
+        self._selected_qls_list = []
+        self._thre_value_list = []
 
     @staticmethod
     def _seconds_since(start_time: float):
@@ -144,10 +144,10 @@ class BETAPlaybackAnalyzer(
 
     async def store_logic_func_values(
         self,
-        selection_before_logic: int,
-        selection_after_logic: int,
-        slope: float,
-        thre: float,
+        selection_before_logic,
+        selection_after_logic,
+        slope,
+        thre,
         selected_qls,
     ):
         self._SBL_list.append(selection_before_logic)

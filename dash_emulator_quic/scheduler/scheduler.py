@@ -126,7 +126,7 @@ class BETASchedulerImpl(BETAScheduler):
             # self.log.info(f"Selections  ={selections}")
             _sbl_value = self._current_selections[0]
 
-            # self.log.info(f"Selections before logic ={self._current_selections}")
+            self.log.info(f"Selections before logic ={self._current_selections}")
 
             # print("Selections_before_logic : ", self._current_selections[0])
             # Select if you want to implement logic
@@ -157,12 +157,13 @@ class BETASchedulerImpl(BETAScheduler):
             self.qual_list.append(self._current_selections[0])
 
             # print("Len of Listener : ", len(self.listeners))
-            # await listener[1].store_logic_func_values(
-            #     _sbl_value, _sal_value, slope, red_value, selected_values
-            # )
-            for listener in self.listeners:
-                print("Listener : ", listener)
+            for i, listener in enumerate(self.listeners):
+                # print("Listener : ", listener)
                 await listener.on_segment_download_start(self._index, selections)
+                if i == 1:
+                    await listener.store_logic_func_values(
+                        _sbl_value, _sal_value, slope, red_value, selected_values
+                    )
             duration = 0
             urls = []
             for adaptation_set_id, selection in selections.items():

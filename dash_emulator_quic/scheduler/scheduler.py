@@ -164,6 +164,12 @@ class BETASchedulerImpl(BETAScheduler):
                     await listener.store_logic_func_values(
                         _sbl_value, _sal_value, slope, red_value, selected_values
                     )
+                    await listener.default_logic_func_values(
+                        self.num_previous_samples,
+                        self.slope_threshold,
+                        self.reduce_QL,
+                        logic,
+                    )
             duration = 0
             urls = []
             for adaptation_set_id, selection in selections.items():

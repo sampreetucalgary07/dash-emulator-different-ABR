@@ -76,7 +76,7 @@ class BETAPlaybackAnalyzer(
         self._SAL_list = []
         self._slope_list = []
         self._selected_qls_list = []
-        self._thre_value_list = []
+        self._logic_act_list = []
 
     @staticmethod
     def _seconds_since(start_time: float):
@@ -147,14 +147,22 @@ class BETAPlaybackAnalyzer(
         selection_before_logic,
         selection_after_logic,
         slope,
-        thre,
+        logic_value,
         selected_qls,
     ):
         self._SBL_list.append(selection_before_logic)
         self._SAL_list.append(selection_after_logic)
         self._slope_list.append(slope)
-        self._thre_value_list.append(thre)
+        self._logic_act_list.append(logic_value)
         self._selected_qls_list.append(selected_qls)
+
+    async def default_logic_func_values(
+        self, num_previous_samples, slope_threshold, reduce_QL, logic
+    ):
+        self._num_previous_samples = num_previous_samples
+        self._slope_threshold = slope_threshold
+        self._reduce_QL = reduce_QL
+        self._logic = logic
 
     def _get_video_representation(self, representation_id):
         """
@@ -283,13 +291,17 @@ class BETAPlaybackAnalyzer(
                 self._SBL_list,
                 self._SAL_list,
                 self._slope_list,
-                self._thre_value_list,
+                self._logic_act_list,
                 self._selected_qls_list,
                 total_stall_num,
                 total_stall_duration,
                 stall_info_list,
                 average_bitrate,
                 quality_switches,
+                self._num_previous_samples,
+                self._slope_threshold,
+                self._reduce_QL,
+                self._logic,
             )
 
     @staticmethod
@@ -299,18 +311,29 @@ class BETAPlaybackAnalyzer(
         SBL_list,
         SAL_list,
         slope_list,
-        thre_value_list,
+        logic_act_list,
         selected_qls_list,
         num_stall,
         dur_stall,
         stall_info_list,
         avg_bitrate,
         num_quality_switches,
+        num_previous_samples,
+        slope_threshold,
+        reduce_QL,
+        logic,
     ):
         print("Dumping results to " + path + "\n")
         data = {"segments": []}
-        for segment, sbl_value, sal_value, slope_value, thre_value, ql_values in zip(
-            segments, SBL_list, SAL_list, slope_list, thre_value_list, selected_qls_list
+        for (
+            segment,
+            sbl_value,
+            sal_value,
+            slope_value,
+            logic_act_value,
+            ql_values,
+        ) in zip(
+            segments, SBL_list, SAL_list, slope_list, logic_act_list, selected_qls_list
         ):
             data_obj = {
                 "index": segment.index,
@@ -321,10 +344,10 @@ class BETAPlaybackAnalyzer(
                 "throughput": segment.bandwidth,
                 "ratio": segment.ratio,
                 "url": segment.url,
-                "selection_before_logic": sbl_value,
-                "selection_after_logic": sal_value,
+                "ql_before_logic": sbl_value,
+                "ql_after_logic": sal_value,
                 "slope": slope_value,
-                "threshold_value": thre_value,
+                "logic_activated": logic_act_value,
                 "selected_qls": ql_values,
             }
             data["segments"].append(data_obj)
@@ -334,6 +357,10 @@ class BETAPlaybackAnalyzer(
         data["stall_info_list"] = stall_info_list
         data["avg_bitrate"] = avg_bitrate
         data["num_quality_switches"] = num_quality_switches
+        data["num_previous_qls_selected"] = num_previous_samples
+        data["slope_threshold_value"] = slope_threshold
+        data["reduce_QL_value"] = reduce_QL
+        data["logic_value"] = logic
 
         extra_index = 1
         final_path = f"{path}-{extra_index}.json"

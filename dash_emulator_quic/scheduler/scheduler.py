@@ -157,11 +157,11 @@ class BETASchedulerImpl(BETAScheduler):
             self.qual_list.append(self._current_selections[0])
 
             # print("Len of Listener : ", len(self.listeners))
-            await listener[1].store_logic_func_values(
-                _sbl_value, _sal_value, slope, red_value, selected_values
-            )
+            # await listener[1].store_logic_func_values(
+            #     _sbl_value, _sal_value, slope, red_value, selected_values
+            # )
             for listener in self.listeners:
-                # print("Listener : ", listener)
+                print("Listener : ", listener)
                 await listener.on_segment_download_start(self._index, selections)
             duration = 0
             urls = []

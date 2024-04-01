@@ -103,7 +103,7 @@ class BETASchedulerImpl(BETAScheduler):
         self.SBL_list = []
         self.SAL_list = []
 
-        self.log.info("BETA: Start scheduler loop from dash_emulator_quic")
+        # self.log.info("BETA: Start scheduler loop from dash_emulator_quic")
         while True:
             # Check buffer level
             if self.buffer_manager.buffer_level > self.max_buffer_duration:
@@ -123,16 +123,12 @@ class BETASchedulerImpl(BETAScheduler):
                 selections = self.abr_controller.update_selection(self.adaptation_sets)
 
             print("index : ", self._index)
-            self.log.info(f"Selections  ={selections}")
-            # print("Selections : ", selections)
-            # current_data[self._index] = {}
-            # current_data[self._index] =
+            # self.log.info(f"Selections  ={selections}")
+
             self._current_selections = selections
-            self.log.info(f"Selections before logic ={self._current_selections}")
-            # self.selection_before_logic.append(self._current_selections[0])
+            # self.log.info(f"Selections before logic ={self._current_selections}")
+
             print("Selections_before_logic : ", self._current_selections[0])
-            # SBL = self._current_selections
-            # current_data[self._index]["SBL"] = self._current_selections
 
             # Select if you want to implement logic
             logic = True
@@ -145,7 +141,7 @@ class BETASchedulerImpl(BETAScheduler):
                 slope, red_value, selected_values = self.slope_estimator(
                     self.qual_list[n:], self.slope_threshold, self.reduce_QL
                 )
-                self.log.info(f"slope={slope}")
+                # self.log.info(f"slope={slope}")
                 print("slope : ", slope)
 
                 self._current_selections[0] = self._current_selections[0] + red_value
@@ -154,39 +150,9 @@ class BETASchedulerImpl(BETAScheduler):
 
             print("Selections_after_logic : ", self._current_selections[0])
 
-            # current_data[self._index]["SAL"] = self._current_selections
-            # SAL = self._current_selections
             print("Selected_values : ", selected_values)
-            # current_data[self._index]["selected_values"] = selected_values
-            # current_data[self._index]["logic"] = logic
-            # current_data[self._index]["slope"] = slope
-            # current_data[self._index]["red_value"] = red_value
+
             self.qual_list.append(self._current_selections[0])
-            # print("Qual_list : ", self.qual_list)
-            # with open("values_list.txt", "w") as f:
-            #     f.write(str(self.qual_list))
-
-            # close the file
-
-            # open a .json file in the current directory and write the list to it
-            # print(curr_dir)
-
-            # data_values = {
-            #     "SBL": SBL,
-            #     "SAL": SAL,
-            #     "logic": logic,
-            #     "slope": slope,
-            #     "red_value": red_value,
-            #     "selected_values": selected_values,
-            # }
-
-            # with open(curr_dir + "/values_list.json", "r") as f:
-            #     current_data = json.load(f)
-
-            # current_data[self._index] = data_values
-
-            # with open(curr_dir + "/values_list.json", "w") as f:
-            #     json.dump(current_data, f)
 
             for listener in self.listeners:
                 await listener.on_segment_download_start(self._index, selections)

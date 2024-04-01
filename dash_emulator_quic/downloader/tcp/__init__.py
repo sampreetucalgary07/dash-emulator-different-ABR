@@ -32,7 +32,7 @@ class TCPClientImpl(QuicClient):
         # If url is in partially accepted set, return read bytes and length
         if url in self._partially_accepted_urls:
             content = self._content[url]
-            return bytes(content), int(self._headers[url]['CONTENT-LENGTH'])
+            return bytes(content), int(self._headers[url]["CONTENT-LENGTH"])
         # If the url has been dropped, return None
         if url in self._cancelled_urls:
             return None
@@ -48,7 +48,7 @@ class TCPClientImpl(QuicClient):
         if url in self._completed_urls:
             self._completed_urls.remove(url)
         content = self._content[url]
-        size = int(self._headers[url]['CONTENT-LENGTH'])
+        size = int(self._headers[url]["CONTENT-LENGTH"])
         return bytes(content), size
 
     def cancel_read_url(self, url: str):
@@ -77,13 +77,15 @@ class TCPClientImpl(QuicClient):
     async def _download_inner(self, url):
         async with self._session.get(url) as resp:
             self._headers[url] = resp.headers
-            size = int(resp.headers['CONTENT-LENGTH'])
+            size = int(resp.headers["CONTENT-LENGTH"])
             async for chunk in resp.content.iter_chunked(10240):
                 self._content[url] += bytearray(chunk)
-                self.log.info(
-                    f"Bytes transferred: length: {len(chunk)}, position: {len(self._content[url])}, size: {size}, url: {url}")
+                # self.log.info(
+                #     f"Bytes transferred: length: {len(chunk)}, position: {len(self._content[url])}, size: {size}, url: {url}")
                 for listener in self._event_listeners:
-                    await listener.on_bytes_transferred(len(chunk), url, len(self._content[url]), size)
+                    await listener.on_bytes_transferred(
+                        len(chunk), url, len(self._content[url]), size
+                    )
         self.log.info(f"Transfer ends: {len(self._content[url])}")
         self._completed_urls.add(url)
         self._waiting_urls[url].set()

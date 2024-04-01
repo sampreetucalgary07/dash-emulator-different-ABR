@@ -88,7 +88,6 @@ class BETASchedulerImpl(BETAScheduler):
         self.reduce_QL = (
             1  # Reduce quality level by this value if slope is less than threshold
         )
-        # self.selected_values_list = []
 
     def slope_estimator(self, q_list, slope_threshold=-0.33, reduce_QL=1):
         X = np.arange(len(q_list))
@@ -115,20 +114,20 @@ class BETASchedulerImpl(BETAScheduler):
                 f"index={self._index}, and dropped_index={self._dropped_index}"
             )
             if self._index == self._dropped_index:
-                print("self._index == self._dropped_index")
+                # print("self._index == self._dropped_index")
                 selections = self.abr_controller.update_selection(
                     self.adaptation_sets, choose_lowest=True
                 )
             else:
                 selections = self.abr_controller.update_selection(self.adaptation_sets)
 
-            print("index : ", self._index)
+            # print("index : ", self._index)
             # self.log.info(f"Selections  ={selections}")
 
             self._current_selections = selections
             # self.log.info(f"Selections before logic ={self._current_selections}")
 
-            print("Selections_before_logic : ", self._current_selections[0])
+            # print("Selections_before_logic : ", self._current_selections[0])
 
             # Select if you want to implement logic
             logic = True
@@ -142,19 +141,20 @@ class BETASchedulerImpl(BETAScheduler):
                     self.qual_list[n:], self.slope_threshold, self.reduce_QL
                 )
                 # self.log.info(f"slope={slope}")
-                print("slope : ", slope)
+                # print("slope : ", slope)
 
                 self._current_selections[0] = self._current_selections[0] + red_value
                 if self._current_selections[0] > 6:
                     self._current_selections[0] = 6
 
-            print("Selections_after_logic : ", self._current_selections[0])
+            # print("Selections_after_logic : ", self._current_selections[0])
 
-            print("Selected_values : ", selected_values)
+            # print("Selected_values : ", selected_values)
 
             self.qual_list.append(self._current_selections[0])
-
+            print("Len of Listener : ", len(self.listeners))
             for listener in self.listeners:
+                print("Listener : ", listener)
                 await listener.on_segment_download_start(self._index, selections)
             duration = 0
             urls = []

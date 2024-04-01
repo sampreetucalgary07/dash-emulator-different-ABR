@@ -69,10 +69,14 @@ class BETAPlaybackAnalyzer(
             []
         )  # start time, completion time, quality selection, bandwidth
         self._segments_by_url: Dict[str, AnalyzerSegment] = {}
-        # self.values_list = BETASchedulerImpl.return_values()
 
         # index, start time, completion time, quality, bandwidth
         self._current_segment: Optional[AnalyzerSegment] = None
+        self._SBL_list: List[int] = []
+        self._SAL_list: List[int] = []
+        self._slope_list: List[float] = []
+        self._selected_qls_list: List[int] = []
+        self._thre_value_list: List[float] = []
 
     @staticmethod
     def _seconds_since(start_time: float):
@@ -137,6 +141,20 @@ class BETAPlaybackAnalyzer(
 
     async def on_bandwidth_update(self, bw: int) -> None:
         self._throughputs.append((self._seconds_since(self._start_time), bw))
+
+    async def store_logic_func_values(
+        self,
+        selection_before_logic: int,
+        selection_after_logic: int,
+        slope: float,
+        thre: float,
+        selected_qls,
+    ):
+        self._SBL_list.append(selection_before_logic)
+        self._SAL_list.append(selection_after_logic)
+        self._slope_list.append(slope)
+        self._thre_value_list.append(thre)
+        self._selected_qls_list.append(selected_qls)
 
     def _get_video_representation(self, representation_id):
         """
@@ -262,6 +280,11 @@ class BETAPlaybackAnalyzer(
             self.dump_results(
                 self.config.dump_results_path,
                 self._segments,
+                self._SBL_list,
+                self._SAL_list,
+                self._slope_list,
+                self._thre_value_list,
+                self._selected_qls_list,
                 total_stall_num,
                 total_stall_duration,
                 stall_info_list,
@@ -273,6 +296,11 @@ class BETAPlaybackAnalyzer(
     def dump_results(
         path,
         segments: List[AnalyzerSegment],
+        SBL_list,
+        SAL_list,
+        slope_list,
+        thre_value_list,
+        selected_qls_list,
         num_stall,
         dur_stall,
         stall_info_list,
@@ -281,7 +309,9 @@ class BETAPlaybackAnalyzer(
     ):
         print("Dumping results to " + path + "\n")
         data = {"segments": []}
-        for segment in segments:
+        for segment, sbl_value, sal_value, slope_value, thre_value, ql_values in zip(
+            segments, SBL_list, SAL_list, slope_list, thre_value_list, selected_qls_list
+        ):
             data_obj = {
                 "index": segment.index,
                 "start": segment.start_time,  # when the player starts downloading the segment
@@ -291,6 +321,11 @@ class BETAPlaybackAnalyzer(
                 "throughput": segment.bandwidth,
                 "ratio": segment.ratio,
                 "url": segment.url,
+                "selection_before_logic": sbl_value,
+                "selection_after_logic": sal_value,
+                "slope": slope_value,
+                "threshold_value": thre_value,
+                "selected_qls": ql_values,
             }
             data["segments"].append(data_obj)
 

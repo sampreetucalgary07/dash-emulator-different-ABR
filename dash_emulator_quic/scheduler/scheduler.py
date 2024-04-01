@@ -121,19 +121,22 @@ class BETASchedulerImpl(BETAScheduler):
             else:
                 selections = self.abr_controller.update_selection(self.adaptation_sets)
 
+            self._current_selections = selections
             # print("index : ", self._index)
             # self.log.info(f"Selections  ={selections}")
+            _sbl_value = self._current_selections[0]
 
-            self._current_selections = selections
             # self.log.info(f"Selections before logic ={self._current_selections}")
 
             # print("Selections_before_logic : ", self._current_selections[0])
-
             # Select if you want to implement logic
             logic = True
+
+            # Initialize slope, red_value and selected_values
             slope = "NA"
             red_value = 0
             selected_values = "NA"
+
             # calculate slope
             if logic == True and len(self.qual_list) > self.num_previous_samples:
                 n = int(-1 * self.num_previous_samples)
@@ -148,13 +151,17 @@ class BETASchedulerImpl(BETAScheduler):
                     self._current_selections[0] = 6
 
             # print("Selections_after_logic : ", self._current_selections[0])
-
+            _sal_value = self._current_selections[0]
             # print("Selected_values : ", selected_values)
 
             self.qual_list.append(self._current_selections[0])
-            print("Len of Listener : ", len(self.listeners))
+
+            # print("Len of Listener : ", len(self.listeners))
+            await listener[1].store_logic_func_values(
+                _sbl_value, _sal_value, slope, red_value, selected_values
+            )
             for listener in self.listeners:
-                print("Listener : ", listener)
+                # print("Listener : ", listener)
                 await listener.on_segment_download_start(self._index, selections)
             duration = 0
             urls = []

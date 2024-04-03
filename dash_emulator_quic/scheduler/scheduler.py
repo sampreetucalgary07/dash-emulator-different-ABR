@@ -82,7 +82,7 @@ class BETASchedulerImpl(BETAScheduler):
         self._dropped_index = None
 
         self.num_previous_samples = (
-            6  # No. of previous samples to consider for slope calculation
+            9  # No. of previous samples to consider for slope calculation
         )
         self.slope_threshold = 0.0  # Threshold for slope calculation
         self.reduce_QL = (

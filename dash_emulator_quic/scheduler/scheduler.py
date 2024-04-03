@@ -130,7 +130,7 @@ class BETASchedulerImpl(BETAScheduler):
 
             # print("Selections_before_logic : ", self._current_selections[0])
             # Select if you want to implement logic
-            logic = False
+            logic = True
 
             # Initialize slope, red_value and selected_values
             slope = "NA"

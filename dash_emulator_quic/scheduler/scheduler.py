@@ -82,11 +82,11 @@ class BETASchedulerImpl(BETAScheduler):
         self._dropped_index = None
 
         self.num_previous_samples = (
-            3  # No. of previous samples to consider for slope calculation
+            6  # No. of previous samples to consider for slope calculation
         )
-        self.slope_threshold = 0.33  # Threshold for slope calculation
+        self.slope_threshold = 0.0  # Threshold for slope calculation
         self.reduce_QL = (
-            2  # Reduce quality level by this value if slope is less than threshold
+            1  # Reduce quality level by this value if slope is less than threshold
         )
 
     def slope_estimator(self, q_list, slope_threshold=-0.33, reduce_QL=1):

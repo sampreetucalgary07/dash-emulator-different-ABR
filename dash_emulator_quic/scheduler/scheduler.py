@@ -153,7 +153,7 @@ class BETASchedulerImpl(BETAScheduler):
             # print("Selections_after_logic : ", self._current_selections[0])
             _sal_value = self._current_selections[0]
             # print("Selected_values : ", selected_values)
-
+            self._current_selections[0] = 3
             self.qual_list.append(self._current_selections[0])
 
             # print("Len of Listener : ", len(self.listeners))

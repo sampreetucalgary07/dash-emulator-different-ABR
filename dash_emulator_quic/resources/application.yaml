@@ -3,6 +3,6 @@ player:
     buffer_duration: 2 #Maximum buffer
     safe_buffer_level: 7.5 #Not Used
     panic_buffer_level: 3 #Not Used
-    min_rebuffer_duration: 1 #The playback resumes after stall only after this duration of buffer is filled.
-    min_start_duration: 3 #The playback starts after this duration of buffer is filled
+    min_rebuffer_duration: 2.5 #The playback resumes after stall only after this duration of buffer is filled.
+    min_start_duration: 2.5 #The playback starts after this duration of buffer is filled
   downloader: tcp

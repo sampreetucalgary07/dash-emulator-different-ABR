@@ -78,8 +78,8 @@ class BetaABRController(ExtendedABRController):
         if choose_lowest is True:
             results = {}
             for adaptation_set in adaptation_sets.values():
-                results[
-                    adaptation_set.id
-                ] = self._find_representation_id_of_lowest_bitrate(adaptation_set)
+                results[adaptation_set.id] = (
+                    self._find_representation_id_of_lowest_bitrate(adaptation_set)
+                )
             return results
         return self.dash_abr_controller.update_selection(adaptation_sets)

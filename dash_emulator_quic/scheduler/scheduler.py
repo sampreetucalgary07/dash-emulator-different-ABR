@@ -123,7 +123,7 @@ class BETASchedulerImpl(BETAScheduler):
 
             self._current_selections = selections
             # print("index : ", self._index)
-            # self.log.info(f"Selections  ={selections}")
+            self.log.info(f"Selections  ={selections}")
             _sbl_value = self._current_selections[0]
 
             self.log.info(f"Selections before logic ={self._current_selections}")

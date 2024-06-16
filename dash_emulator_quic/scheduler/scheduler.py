@@ -126,7 +126,7 @@ class BETASchedulerImpl(BETAScheduler):
             self.log.info(f"Selections  ={selections}")
             _sbl_value = self._current_selections[0]
 
-            self.log.info(f"Selections before logic ={self._current_selections}")
+            # self.log.info(f"Selections before logic ={self._current_selections}")
 
             # print("Selections_before_logic : ", self._current_selections[0])
             # Select if you want to implement logic

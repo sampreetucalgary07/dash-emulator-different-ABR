@@ -134,7 +134,7 @@ class BETASchedulerImpl(BETAScheduler):
 
             # Initialize slope, red_value and selected_values
             slope = "NA"
-            red_value = 3
+            red_value = 5
             selected_values = "NA"
 
             # calculate slope

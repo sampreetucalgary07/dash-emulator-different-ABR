@@ -344,11 +344,11 @@ class BETAPlaybackAnalyzer(
                 "throughput": segment.bandwidth,
                 "ratio": segment.ratio,
                 "url": segment.url,
-                "ql_before_logic": sbl_value,
-                "ql_after_logic": sal_value,
+                "selected_qls": ql_values,
                 "slope": slope_value,
                 "logic_activated": logic_act_value,
-                "selected_qls": ql_values,
+                "ql_before_logic": sbl_value,
+                "ql_after_logic": sal_value,
             }
             data["segments"].append(data_obj)
 

@@ -105,8 +105,8 @@ class BETASchedulerImpl(BETAScheduler):
         # self.log.info("BETA: Start scheduler loop from dash_emulator_quic")
         while True:
             # Check buffer level
-            # print("Buffer Level : ", self.buffer_manager.buffer_level)
-            # self.log.info(f"Buffer Level : {self.buffer_manager.buffer_level}")
+            print("Buffer Level : ", self.buffer_manager.buffer_level)
+            self.log.info(f"Buffer Level : {self.buffer_manager.buffer_level}")
             if self.buffer_manager.buffer_level > self.max_buffer_duration:
                 await asyncio.sleep(self.update_interval)
                 continue

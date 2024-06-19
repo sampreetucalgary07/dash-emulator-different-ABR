@@ -105,7 +105,7 @@ class BETASchedulerImpl(BETAScheduler):
         # self.log.info("BETA: Start scheduler loop from dash_emulator_quic")
         while True:
             # Check buffer level
-            print("Buffer Level : ", self.buffer_manager.buffer_level)
+            # print("Buffer Level : ", self.buffer_manager.buffer_level)
             self.log.info(f"Buffer Level : {self.buffer_manager.buffer_level}")
             if self.buffer_manager.buffer_level > self.max_buffer_duration:
                 await asyncio.sleep(self.update_interval)
@@ -154,6 +154,7 @@ class BETASchedulerImpl(BETAScheduler):
 
             # print("Selections_after_logic : ", self._current_selections[0])
             _sal_value = self._current_selections[0]
+            buffer_level = self.buffer_manager.buffer_level  # Buffer level
             # print("Selected_values : ", selected_values)
             # self._current_selections[0] = 5
             self.qual_list.append(self._current_selections[0])
@@ -164,7 +165,12 @@ class BETASchedulerImpl(BETAScheduler):
                 await listener.on_segment_download_start(self._index, selections)
                 if i == 1:
                     await listener.store_logic_func_values(
-                        _sbl_value, _sal_value, slope, red_value, selected_values
+                        _sbl_value,
+                        _sal_value,
+                        slope,
+                        red_value,
+                        selected_values,
+                        buffer_level,
                     )
                     await listener.default_logic_func_values(
                         self.num_previous_samples,

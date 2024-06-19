@@ -77,6 +77,7 @@ class BETAPlaybackAnalyzer(
         self._slope_list = []
         self._selected_qls_list = []
         self._logic_act_list = []
+        self._buffer_level_list = []
 
     @staticmethod
     def _seconds_since(start_time: float):
@@ -149,12 +150,14 @@ class BETAPlaybackAnalyzer(
         slope,
         logic_value,
         selected_qls,
+        buffer_level,
     ):
         self._SBL_list.append(selection_before_logic)
         self._SAL_list.append(selection_after_logic)
         self._slope_list.append(slope)
         self._logic_act_list.append(logic_value)
         self._selected_qls_list.append(selected_qls)
+        self._buffer_level_list.append(buffer_level)
 
     async def default_logic_func_values(
         self, num_previous_samples, slope_threshold, reduce_QL, logic
@@ -302,6 +305,7 @@ class BETAPlaybackAnalyzer(
                 self._slope_threshold,
                 self._reduce_QL,
                 self._logic,
+                self._buffer_level_list,
             )
 
     @staticmethod
@@ -322,6 +326,7 @@ class BETAPlaybackAnalyzer(
         slope_threshold,
         reduce_QL,
         logic,
+        buffer_level_list,
     ):
         print("Dumping results to " + path + "\n")
         data = {"segments": []}
@@ -332,8 +337,15 @@ class BETAPlaybackAnalyzer(
             slope_value,
             logic_act_value,
             ql_values,
+            buffer_level_value,
         ) in zip(
-            segments, SBL_list, SAL_list, slope_list, logic_act_list, selected_qls_list
+            segments,
+            SBL_list,
+            SAL_list,
+            slope_list,
+            logic_act_list,
+            selected_qls_list,
+            buffer_level_list,
         ):
             data_obj = {
                 "index": segment.index,
@@ -349,6 +361,7 @@ class BETAPlaybackAnalyzer(
                 "logic_activated": logic_act_value,
                 "ql_before_logic": sbl_value,
                 "ql_after_logic": sal_value,
+                "buffer_level": buffer_level_value,
             }
             data["segments"].append(data_obj)
 

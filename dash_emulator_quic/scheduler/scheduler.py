@@ -86,7 +86,7 @@ class BETASchedulerImpl(BETAScheduler):
         )
         self.slope_threshold = 0.0  # Threshold for slope calculation
         self.reduce_QL = (
-            2  # Reduce quality level by this value if slope is less than threshold
+            5  # Reduce quality level by this value if slope is less than threshold
         )
 
     def slope_estimator(self, q_list, slope_threshold=-0.33, reduce_QL=1):
@@ -132,13 +132,14 @@ class BETASchedulerImpl(BETAScheduler):
 
             # print("Selections_before_logic : ", self._current_selections[0])
             # Select if you want to implement logic
-            logic = False
+            logic = True
 
-            # Initialize slope, red_value and selected_values
+            # Initialize slope and selected_values
             slope = "NA"
-            red_value = 1
             selected_values = "NA"
 
+            # Default red_value is 0 DON't CHANGE
+            red_value = 0
             # calculate slope
             if logic == True and len(self.qual_list) > self.num_previous_samples:
                 n = int(-1 * self.num_previous_samples)

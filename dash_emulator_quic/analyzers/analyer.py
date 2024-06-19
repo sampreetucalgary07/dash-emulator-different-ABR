@@ -359,7 +359,7 @@ class BETAPlaybackAnalyzer(
                 "url": segment.url,
                 "selected_qls": ql_values,
                 "slope": slope_value,
-                "ql_reduce_val": logic_act_value,
+                "logic status": logic_act_value,
                 "ql_before_logic": sbl_value,
                 "ql_after_logic": sal_value,
             }

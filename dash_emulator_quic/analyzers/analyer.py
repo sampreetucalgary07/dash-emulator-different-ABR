@@ -355,13 +355,13 @@ class BETAPlaybackAnalyzer(
                 "bitrate": segment.segment_bitrate,  # bitrate of the segment
                 "throughput": segment.bandwidth,
                 "ratio": segment.ratio,
+                "buffer_level": buffer_level_value,
                 "url": segment.url,
                 "selected_qls": ql_values,
                 "slope": slope_value,
-                "logic_activated": logic_act_value,
+                "ql_reduce_val": logic_act_value,
                 "ql_before_logic": sbl_value,
                 "ql_after_logic": sal_value,
-                "buffer_level": buffer_level_value,
             }
             data["segments"].append(data_obj)
 

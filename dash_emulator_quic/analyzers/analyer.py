@@ -150,14 +150,14 @@ class BETAPlaybackAnalyzer(
         slope,
         logic_value,
         selected_qls,
-        buffer_level,
+        buffer_level_at_time,
     ):
         self._SBL_list.append(selection_before_logic)
         self._SAL_list.append(selection_after_logic)
         self._slope_list.append(slope)
         self._logic_act_list.append(logic_value)
         self._selected_qls_list.append(selected_qls)
-        self._buffer_level_list.append(buffer_level)
+        self._buffer_level_list.append(buffer_level_at_time)
 
     async def default_logic_func_values(
         self, num_previous_samples, slope_threshold, reduce_QL, logic

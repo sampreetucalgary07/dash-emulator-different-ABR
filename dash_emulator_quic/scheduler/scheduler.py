@@ -162,6 +162,7 @@ class BETASchedulerImpl(BETAScheduler):
                 self.buffer_manager.buffer_level,
                 round(time.time() - start_time, 3),
             ]  # Buffer level
+            print("Buffer Level : ", buffer_level_at_time)
             # print("Selected_values : ", selected_values)
             # self._current_selections[0] = 5
             self.qual_list.append(self._current_selections[0])

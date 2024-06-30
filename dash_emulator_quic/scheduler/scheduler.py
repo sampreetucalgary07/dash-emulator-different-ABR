@@ -1,6 +1,8 @@
 import asyncio
-import os
-import json
+
+# import os
+# import json
+import time
 import logging
 from abc import ABC, abstractmethod
 from asyncio import Task
@@ -101,20 +103,21 @@ class BETASchedulerImpl(BETAScheduler):
         self.qual_list = []
         self.SBL_list = []
         self.SAL_list = []
+        start_time = time.time()
 
         # self.log.info("BETA: Start scheduler loop from dash_emulator_quic")
         while True:
             # Check buffer level
             # print("Buffer Level : ", self.buffer_manager.buffer_level)
-            self.log.info(f"Buffer Level : {self.buffer_manager.buffer_level}")
+            # self.log.info(f"Buffer Level : {self.buffer_manager.buffer_level}")
             if self.buffer_manager.buffer_level > self.max_buffer_duration:
                 await asyncio.sleep(self.update_interval)
                 continue
 
             # Download one segment from each adaptation set
-            self.log.info(
-                f"index={self._index}, and dropped_index={self._dropped_index}"
-            )
+            # self.log.info(
+            #     f"index={self._index}, and dropped_index={self._dropped_index}"
+            # )
             if self._index == self._dropped_index:
                 # print("self._index == self._dropped_index")
                 selections = self.abr_controller.update_selection(
@@ -155,7 +158,10 @@ class BETASchedulerImpl(BETAScheduler):
 
             # print("Selections_after_logic : ", self._current_selections[0])
             _sal_value = self._current_selections[0]
-            buffer_level = self.buffer_manager.buffer_level  # Buffer level
+            buffer_level_at_time = [
+                self.buffer_manager.buffer_level,
+                round(time.time() - start_time, 3),
+            ]  # Buffer level
             # print("Selected_values : ", selected_values)
             # self._current_selections[0] = 5
             self.qual_list.append(self._current_selections[0])
@@ -171,7 +177,7 @@ class BETASchedulerImpl(BETAScheduler):
                         slope,
                         red_value,
                         selected_values,
-                        buffer_level,
+                        buffer_level_at_time,
                     )
                     await listener.default_logic_func_values(
                         self.num_previous_samples,

@@ -306,6 +306,7 @@ class BETAPlaybackAnalyzer(
                 self._reduce_QL,
                 self._logic,
                 self._buffer_level_list,
+                self._buffer_levels,
             )
 
     @staticmethod
@@ -327,6 +328,7 @@ class BETAPlaybackAnalyzer(
         reduce_QL,
         logic,
         buffer_level_list,
+        buffer_level_list2,
     ):
         print("Dumping results to " + path + "\n")
         data = {"segments": []}
@@ -338,6 +340,7 @@ class BETAPlaybackAnalyzer(
             logic_act_value,
             ql_values,
             buffer_level_value,
+            buffer_level_value2,
         ) in zip(
             segments,
             SBL_list,
@@ -346,6 +349,7 @@ class BETAPlaybackAnalyzer(
             logic_act_list,
             selected_qls_list,
             buffer_level_list,
+            buffer_level_list2,
         ):
             data_obj = {
                 "index": segment.index,
@@ -356,6 +360,7 @@ class BETAPlaybackAnalyzer(
                 "throughput": segment.bandwidth,
                 "ratio": segment.ratio,
                 "buffer_level": buffer_level_value,
+                "buffer_level2": buffer_level_value2,
                 "url": segment.url,
                 "selected_qls": ql_values,
                 "slope": slope_value,

@@ -171,7 +171,7 @@ class BETASchedulerImpl(BETAScheduler):
             # print("Selected_values : ", selected_values)
             # self._current_selections[0] = 5
             self.qual_list.append(self._current_selections[0])
-
+            n = 0
             # print("Len of Listener : ", len(self.listeners))
             for i, listener in enumerate(self.listeners):
                 # print("Listener : ", listener)
@@ -179,7 +179,9 @@ class BETASchedulerImpl(BETAScheduler):
                     self._index, self._current_selections
                 )
                 if i == 0:
-                    print(listener.get_states())
+                    n = n + 1
+                    print("n : ", n)
+                    print("states : ", listener.get_states())
                     # try:
                     #     for buffer in listener.get_states():
                     #         if buffer[1] == State.READY:

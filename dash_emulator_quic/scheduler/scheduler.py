@@ -118,8 +118,8 @@ class BETASchedulerImpl(BETAScheduler):
         # self.log.info("BETA: Start scheduler loop from dash_emulator_quic")
         while True:
             # print states:
-            self.log.info(f"States : {self._states}")
-            print("States : ", self._states)
+            # self.log.info(f"States : {self._states}")
+            # print("States : ", self._states)
             # Check buffer level
             # print("Buffer Level : ", self.buffer_manager.buffer_level)
             # self.log.info(f"Buffer Level : {self.buffer_manager.buffer_level}")
@@ -184,7 +184,9 @@ class BETASchedulerImpl(BETAScheduler):
             for i, listener in enumerate(self.listeners):
                 # print("Listener : ", listener)
                 await listener.on_segment_download_start(self._index, selections)
-                if i == 1:
+                if i == 0:
+                    print(listener.get_states())
+                elif i == 1:
                     await listener.store_logic_func_values(
                         _sbl_value,
                         _sal_value,

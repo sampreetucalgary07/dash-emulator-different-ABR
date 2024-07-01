@@ -100,19 +100,11 @@ class BETASchedulerImpl(BETAScheduler):
         else:
             return slope, 0, q_list
 
-    # async def print_states(self):
-    #     print("States : ", self._states)
-    #     self.log.info(f"States : {self._states}")
-
-    async def print_states_every_second(self):
-        while True:
-            await self.print_states()
-            await asyncio.sleep(1)
-
     async def loop(self):
         self.qual_list = []
         self.SBL_list = []
         self.SAL_list = []
+
         start_time = time.time()
 
         # self.log.info("BETA: Start scheduler loop from dash_emulator_quic")
@@ -183,7 +175,9 @@ class BETASchedulerImpl(BETAScheduler):
             # print("Len of Listener : ", len(self.listeners))
             for i, listener in enumerate(self.listeners):
                 # print("Listener : ", listener)
-                await listener.on_segment_download_start(self._index, selections)
+                await listener.on_segment_download_start(
+                    self._index, self._current_selections
+                )
                 if i == 0:
                     print(listener.get_states())
                 elif i == 1:
@@ -204,7 +198,7 @@ class BETASchedulerImpl(BETAScheduler):
 
             duration = 0
             urls = []
-            for adaptation_set_id, selection in selections.items():
+            for adaptation_set_id, selection in self._current_selections.items():
                 adaptation_set = self.adaptation_sets[adaptation_set_id]
                 representation = adaptation_set.representations.get(selection)
                 representation_str = "%d:%d" % (adaptation_set_id, representation.id)

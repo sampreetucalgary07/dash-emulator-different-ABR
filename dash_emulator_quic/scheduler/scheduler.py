@@ -179,7 +179,8 @@ class BETASchedulerImpl(BETAScheduler):
                     self._index, self._current_selections
                 )
                 if i == 0:
-                    print(listener.get_states())
+                    get_states = listener.get_states()
+                    print("Leght: ", len(get_states))
                 elif i == 1:
                     await listener.store_logic_func_values(
                         _sbl_value,

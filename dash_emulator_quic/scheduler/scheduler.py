@@ -6,14 +6,14 @@ import time
 import logging
 from abc import ABC, abstractmethod
 from asyncio import Task
-from typing import Dict, Optional, Set, List
+from typing import Dict, Optional, Set, List, Tuple
 import numpy as np
 
 from scipy import stats
 
 from dash_emulator.bandwidth import BandwidthMeter
 from dash_emulator.buffer import BufferManager
-from dash_emulator.models import AdaptationSet
+from dash_emulator.models import AdaptationSet, State
 from dash_emulator.scheduler import Scheduler, SchedulerEventListener
 
 from dash_emulator_quic.abr import ExtendedABRController
@@ -79,6 +79,7 @@ class BETASchedulerImpl(BETAScheduler):
         self._index = 0
         self._representation_initialized: Set[str] = set()
         self._current_selections: Optional[Dict[int, int]] = None
+        self._states: List[Tuple[float, State]] = []
 
         self._end = False
         self._dropped_index = None
@@ -99,6 +100,15 @@ class BETASchedulerImpl(BETAScheduler):
         else:
             return slope, 0, q_list
 
+    async def print_states(self):
+        print("States : ", self._states)
+        self.log.info(f"States : {self._states}")
+
+    async def print_states_every_second(self):
+        while True:
+            await self.print_states()
+            await asyncio.sleep(1)
+
     async def loop(self):
         self.qual_list = []
         self.SBL_list = []
@@ -107,6 +117,7 @@ class BETASchedulerImpl(BETAScheduler):
 
         # self.log.info("BETA: Start scheduler loop from dash_emulator_quic")
         while True:
+
             # Check buffer level
             # print("Buffer Level : ", self.buffer_manager.buffer_level)
             # self.log.info(f"Buffer Level : {self.buffer_manager.buffer_level}")
@@ -162,7 +173,7 @@ class BETASchedulerImpl(BETAScheduler):
                 self.buffer_manager.buffer_level,
                 round(time.time() - start_time, 3),
             ]  # Buffer level
-            print("Buffer Level : ", buffer_level_at_time)
+            # print("Buffer Level : ", buffer_level_at_time)
             # print("Selected_values : ", selected_values)
             # self._current_selections[0] = 5
             self.qual_list.append(self._current_selections[0])

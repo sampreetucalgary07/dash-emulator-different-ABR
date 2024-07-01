@@ -100,9 +100,9 @@ class BETASchedulerImpl(BETAScheduler):
         else:
             return slope, 0, q_list
 
-    async def print_states(self):
-        print("States : ", self._states)
-        self.log.info(f"States : {self._states}")
+    # async def print_states(self):
+    #     print("States : ", self._states)
+    #     self.log.info(f"States : {self._states}")
 
     async def print_states_every_second(self):
         while True:
@@ -117,7 +117,9 @@ class BETASchedulerImpl(BETAScheduler):
 
         # self.log.info("BETA: Start scheduler loop from dash_emulator_quic")
         while True:
-
+            # print states:
+            self.log.info(f"States : {self._states}")
+            print("States : ", self._states)
             # Check buffer level
             # print("Buffer Level : ", self.buffer_manager.buffer_level)
             # self.log.info(f"Buffer Level : {self.buffer_manager.buffer_level}")
@@ -197,6 +199,7 @@ class BETASchedulerImpl(BETAScheduler):
                         self.reduce_QL,
                         logic,
                     )
+
             duration = 0
             urls = []
             for adaptation_set_id, selection in selections.items():

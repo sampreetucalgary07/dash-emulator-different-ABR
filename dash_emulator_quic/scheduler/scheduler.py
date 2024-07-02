@@ -179,6 +179,8 @@ class BETASchedulerImpl(BETAScheduler):
                     print("len States : ", len(listener.get_states()))
                     if len(listener.get_states()) > 3:
                         print("States : ", listener.get_states()[-3:])
+                        print("States 1: ", listener.get_states()[-3:][-1])
+                        print("States 0: ", listener.get_states()[-3:][0])
                     #     if (
                     #         listener.get_states()[-3:][-1]
                     #         - listener.get_states()[-3:][0]

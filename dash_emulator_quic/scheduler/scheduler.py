@@ -138,7 +138,7 @@ class BETASchedulerImpl(BETAScheduler):
 
             # self.log.info(f"Selections before logic ={self._current_selections}")
 
-            # print("Selections_before_logic : ", self._current_selections[0])
+            print("Selections_before_logic : ", self._current_selections[0])
             # Select if you want to implement logic
             logic = False
 
@@ -183,13 +183,12 @@ class BETASchedulerImpl(BETAScheduler):
                                 (listener.get_states()[-3:][-1])
                                 - (listener.get_states()[-3:][0])
                             )
-                            < 30
-                        ) and ((self._index - listener.get_states()[-3:][1]) < 5):
+                            < 15
+                        ) and ((self._index - listener.get_states()[-3:][-1]) < 5):
                             print(" index : ", self._index)
                             print(" States : ", listener.get_states())
                             self._current_selections[0] = 5
 
-            for i, listener in enumerate(self.listeners):
                 await listener.on_segment_download_start(
                     self._index, self._current_selections
                 )
@@ -209,7 +208,7 @@ class BETASchedulerImpl(BETAScheduler):
                         self.reduce_QL,
                         logic,
                     )
-
+            print("Selections_after_logic : ", self._current_selections[0])
             duration = 0
             urls = []
             for adaptation_set_id, selection in self._current_selections.items():

@@ -173,7 +173,7 @@ class BETASchedulerImpl(BETAScheduler):
             self.qual_list.append(self._current_selections[0])
             # n = 0
             # print("Len of Listener : ", len(self.listeners))
-            stall_logic = True
+            stall_logic = False
             # listener_tasks = []
             for i, listener in enumerate(self.listeners):
 

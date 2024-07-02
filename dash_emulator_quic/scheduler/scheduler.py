@@ -173,39 +173,44 @@ class BETASchedulerImpl(BETAScheduler):
             self.qual_list.append(self._current_selections[0])
             # n = 0
             # print("Len of Listener : ", len(self.listeners))
+            stall_logic = True
+            listener_tasks = []
             for i, listener in enumerate(self.listeners):
                 # print("Listener : ", listener)
                 await listener.on_segment_download_start(
                     self._index, self._current_selections
                 )
-                if i == 0:
-                    if len(listener.get_states()) > 3:
-                        if (
-                            (
-                                (listener.get_states()[-3:][-1])
-                                - (listener.get_states()[-3:][0])
-                            )
-                            < 15
-                        ) and ((self._index - listener.get_states()[-3:][-1]) < 5):
+
+                if stall_logic == True and i == 0:
+                    states = listener.get_states()
+                    if len(states) > 3:
+                        if (((states[-3:][-1]) - (states[-3:][0])) < 25) and (
+                            (self._index - states[-3:][-1]) < 5
+                        ):
                             print(" index : ", self._index)
-                            print(" States : ", listener.get_states())
+                            print(" States : ", states)
                             self._current_selections[0] = 5
 
                 if i == 1:
-                    await listener.store_logic_func_values(
-                        _sbl_value,
-                        _sal_value,
-                        slope,
-                        red_value,
-                        selected_values,
-                        buffer_level_at_time,
+                    listener_tasks.append(
+                        listener.store_logic_func_values(
+                            _sbl_value,
+                            _sal_value,
+                            slope,
+                            red_value,
+                            selected_values,
+                            buffer_level_at_time,
+                        )
                     )
-                    await listener.default_logic_func_values(
-                        self.num_previous_samples,
-                        self.slope_threshold,
-                        self.reduce_QL,
-                        logic,
+                    listener_tasks.append(
+                        listener.default_logic_func_values(
+                            self.num_previous_samples,
+                            self.slope_threshold,
+                            self.reduce_QL,
+                            logic,
+                        )
                     )
+                    await asyncio.gather(*listener_tasks)
 
             duration = 0
             urls = []

@@ -184,6 +184,8 @@ class BETASchedulerImpl(BETAScheduler):
                             < 30
                         ):
                             self._current_selections[0] = 5
+                    else:
+                        pass
                 await listener.on_segment_download_start(
                     self._index, self._current_selections
                 )

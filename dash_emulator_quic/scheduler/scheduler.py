@@ -180,11 +180,15 @@ class BETASchedulerImpl(BETAScheduler):
                 )
 
                 if i == 0:
-                    print("states : ", listener.get_states())
+                    print("States : ", listener.get_states()[-3:])
+
                     # try:
-                    #     for buffer in listener.get_states():
-                    #         if buffer[1] == State.READY:
-                    #             print(buffer[0])
+                    #     if (
+                    #         listener.get_states()[-3:][-1]
+                    #         - listener.get_states()[-3:][0]
+                    #         < 30
+                    #     ):
+                    #         self._current_selections[0] = 5
                     # except:
                     #     pass
 

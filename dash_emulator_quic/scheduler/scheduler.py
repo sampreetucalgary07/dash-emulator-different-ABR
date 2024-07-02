@@ -185,12 +185,15 @@ class BETASchedulerImpl(BETAScheduler):
                     if len(states) > no_of_stalls_to_consider:
                         if (
                             (
-                                (states[-1 * no_of_stalls_to_consider :][-1])
-                                - (states[-1 * no_of_stalls_to_consider :][0])
+                                (states[(-1 * no_of_stalls_to_consider) :][-1])
+                                - (states[(-1 * no_of_stalls_to_consider) :][0])
                             )
                             < diff_between_stalls
                         ) and (
-                            (self._index - states[-1 * no_of_stalls_to_consider :][-1])
+                            (
+                                self._index
+                                - states[(-1 * no_of_stalls_to_consider) :][-1]
+                            )
                             < diff_index_last_stall
                         ):
                             print(" index : ", self._index)

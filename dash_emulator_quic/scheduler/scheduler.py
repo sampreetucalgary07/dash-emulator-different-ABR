@@ -173,33 +173,24 @@ class BETASchedulerImpl(BETAScheduler):
             self.qual_list.append(self._current_selections[0])
             # n = 0
             # print("Len of Listener : ", len(self.listeners))
-            stall_logic = False
+            stall_logic = True
             # listener_tasks = []
             no_of_stalls_to_consider = 2
             diff_between_stalls = 30
             diff_index_last_stall = 5
             for i, listener in enumerate(self.listeners):
+                await listener.on_segment_download_start(self._index, selections)
 
                 if i == 0 and stall_logic == True:
                     states = listener.get_states()
-                    if len(states) > no_of_stalls_to_consider:
+                    if len(states) > 2:
                         if (
-                            (
-                                (states[(-1 * no_of_stalls_to_consider) :][-1])
-                                - (states[(-1 * no_of_stalls_to_consider) :][0])
-                            )
-                            < diff_between_stalls
-                        ) and (
-                            (
-                                self._index
-                                - states[(-1 * no_of_stalls_to_consider) :][-1]
-                            )
-                            < diff_index_last_stall
-                        ):
+                            ((states[-2:][-1]) - (states[-2:][0])) < diff_between_stalls
+                        ) and ((self._index - states[-2:][-1]) < diff_index_last_stall):
                             print(" index : ", self._index)
                             print(" States : ", states)
                             self._current_selections[0] = 6
-                await listener.on_segment_download_start(self._index, selections)
+
                 if i == 1:
                     # listener_tasks.append(
                     await listener.store_logic_func_values(

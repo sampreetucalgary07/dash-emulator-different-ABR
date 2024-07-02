@@ -176,9 +176,6 @@ class BETASchedulerImpl(BETAScheduler):
             stall_logic = True
             # listener_tasks = []
             for i, listener in enumerate(self.listeners):
-                await listener.on_segment_download_start(
-                    self._index, self._current_selections
-                )
 
                 if i == 0 and stall_logic == True:
                     states = listener.get_states()
@@ -189,7 +186,7 @@ class BETASchedulerImpl(BETAScheduler):
                             print(" index : ", self._index)
                             print(" States : ", states)
                             self._current_selections[0] = 5
-
+                await listener.on_segment_download_start(self._index, selections)
                 if i == 1:
                     # listener_tasks.append(
                     await listener.store_logic_func_values(
@@ -212,7 +209,7 @@ class BETASchedulerImpl(BETAScheduler):
             duration = 0
             urls = []
             print("Selections : ", self._current_selections)
-            for adaptation_set_id, selection in self._current_selections.items():
+            for adaptation_set_id, selection in selections.items():
                 adaptation_set = self.adaptation_sets[adaptation_set_id]
                 representation = adaptation_set.representations.get(selection)
                 representation_str = "%d:%d" % (adaptation_set_id, representation.id)

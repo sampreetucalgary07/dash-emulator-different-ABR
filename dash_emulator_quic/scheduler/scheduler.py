@@ -176,16 +176,17 @@ class BETASchedulerImpl(BETAScheduler):
             for i, listener in enumerate(self.listeners):
                 # print("Listener : ", listener)
                 if i == 0:
-                    print("States : ", listener.get_states())
+                    print("len States : ", len(listener.get_states()))
                     if len(listener.get_states()) > 3:
-                        if (
-                            listener.get_states()[-3:][-1]
-                            - listener.get_states()[-3:][0]
-                            < 30
-                        ):
-                            self._current_selections[0] = 5
-                    else:
-                        pass
+                        print("States : ", listener.get_states()[-3:])
+                    #     if (
+                    #         listener.get_states()[-3:][-1]
+                    #         - listener.get_states()[-3:][0]
+                    #         < 30
+                    #     ):
+                    #         self._current_selections[0] = 5
+                    # else:
+                    #     pass
                 await listener.on_segment_download_start(
                     self._index, self._current_selections
                 )

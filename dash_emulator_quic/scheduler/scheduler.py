@@ -181,6 +181,12 @@ class BETASchedulerImpl(BETAScheduler):
                         print("States : ", listener.get_states()[-3:])
                         print("States 1: ", listener.get_states()[-3:][-1])
                         print("States 0: ", listener.get_states()[-3:][0])
+                        print(
+                            "Subtract : ",
+                            (listener.get_states()[-3:][-1])
+                            - (listener.get_states()[-3:][0]),
+                        )
+
                     #     if (
                     #         listener.get_states()[-3:][-1]
                     #         - listener.get_states()[-3:][0]

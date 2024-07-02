@@ -185,7 +185,7 @@ class BETASchedulerImpl(BETAScheduler):
                         ):
                             print(" index : ", self._index)
                             print(" States : ", states)
-                            self._current_selections[0] = 5
+                            self._current_selections[0] = 6
                 await listener.on_segment_download_start(self._index, selections)
                 if i == 1:
                     # listener_tasks.append(

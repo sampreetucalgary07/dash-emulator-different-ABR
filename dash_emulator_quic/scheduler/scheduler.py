@@ -175,24 +175,23 @@ class BETASchedulerImpl(BETAScheduler):
             # print("Len of Listener : ", len(self.listeners))
             for i, listener in enumerate(self.listeners):
                 # print("Listener : ", listener)
+                if i == 0:
+                    print("States : ", listener.get_states()[-3:])
                 await listener.on_segment_download_start(
                     self._index, self._current_selections
                 )
 
-                if i == 0:
-                    print("States : ", listener.get_states()[-3:])
+                # try:
+                #     if (
+                #         listener.get_states()[-3:][-1]
+                #         - listener.get_states()[-3:][0]
+                #         < 30
+                #     ):
+                #         self._current_selections[0] = 5
+                # except:
+                #     pass
 
-                    # try:
-                    #     if (
-                    #         listener.get_states()[-3:][-1]
-                    #         - listener.get_states()[-3:][0]
-                    #         < 30
-                    #     ):
-                    #         self._current_selections[0] = 5
-                    # except:
-                    #     pass
-
-                elif i == 1:
+                if i == 1:
                     await listener.store_logic_func_values(
                         _sbl_value,
                         _sal_value,

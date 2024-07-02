@@ -176,7 +176,7 @@ class BETASchedulerImpl(BETAScheduler):
             for i, listener in enumerate(self.listeners):
                 # print("Listener : ", listener)
                 if i == 0:
-                    print("States : ", listener.get_states()[-3:])
+                    print("States : ", listener.get_states())
                 await listener.on_segment_download_start(
                     self._index, self._current_selections
                 )

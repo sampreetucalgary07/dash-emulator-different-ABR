@@ -1,6 +1,6 @@
 player:
   buffer-settings:
-    buffer_duration: 3.0 #Maximum buffer 10
+    buffer_duration: 5.0 #Maximum buffer 10
     safe_buffer_level: 2.5 #Not Used 7.5
     panic_buffer_level: 1.5 #Not Used 3
     min_rebuffer_duration: 1.0 #The playback resumes after stall only after this duration of buffer is filled. 2.5
